@@ -91,6 +91,11 @@ Sub manualFontsToCharStyle
 End Sub
 
 Private Sub replaceBaseWithStandard
+	replaceParaStyle(&quot;Базовый&quot;,&quot;Основной текст&quot;)
+	replaceParaStyle(&quot;Default Style&quot;,&quot;Text Body&quot;)
+End Sub
+
+Private Sub replaceParaStyle(oldStyleName,newStyleName)
 	dim document   as Object
 	dim dispatcher as object
 	document   = ThisComponent.CurrentController.Frame
@@ -119,9 +124,9 @@ Private Sub replaceBaseWithStandard
 	args1(10).Name = &quot;SearchItem.SearchFlags&quot;
 	args1(10).Value = 65536
 	args1(11).Name = &quot;SearchItem.SearchString&quot;
-	args1(11).Value = &quot;Базовый&quot;
+	args1(11).Value = oldStyleName
 	args1(12).Name = &quot;SearchItem.ReplaceString&quot;
-	args1(12).Value = &quot;Основной текст&quot;
+	args1(12).Value = newStyleName
 	args1(13).Name = &quot;SearchItem.Locale&quot;
 	args1(13).Value = 255
 	args1(14).Name = &quot;SearchItem.ChangedChars&quot;
