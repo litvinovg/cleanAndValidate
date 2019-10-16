@@ -15,11 +15,59 @@
 	disposePageBreaks
 	disposeAllLinks
 	disposeAllBookmarks
-	fixTableAnchors
-
+	fixTableWidth
+	fixDrawingAnchors
+	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
 End Sub
+
+Private Sub loadArticleStyles
+        Dim dispatcher as object
+        Dim fileePath As String
+        Dim fileTest As Object
+        Dim fileName As String
+        Dim aArgs(0)  As New com.sun.star.beans.PropertyValue
+        fileName = &quot;Статья.ott&quot;
+        filePath = getTemplatePath() &amp; &quot;/&quot; &amp; fileName
+        fileTest = CreateUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+        If NOT fileTest.exists(filePath) Then
+                MsgBox &quot;Файл стилей &quot; &amp; fileName &amp; &quot; не добавлен в Мои шаблоны. Не могу загрузить стили в текущий файл.&quot;
+                Exit Sub
+        EndIf
+        dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+    aArgs(0).Name = &quot;OverwriteStyles&quot;
+    aArgs(0).Value = True
+    ThisComponent.StyleFamilies.loadStylesFromURL( filePath, aArgs() )
+End Sub
+
+Private Sub AskAndReplace(SearchString, oReplaceString)
+	Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
+	Dim ReplAttributes(0) as new com.sun.star.beans.PropertyValue
+	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
+End Sub
+
+Private Function getTemplatePath() as String
+        Dim ath as String
+        Dim settings As Object
+        Dim configProvider As Object
+        Dim params(0) As new com.sun.star.beans.PropertyValue
+        Dim convService As Object
+
+        configProvider = createUnoService( &quot;com.sun.star.configuration.ConfigurationProvider&quot; )
+        params(0).Name = &quot;nodepath&quot;
+        params(0).Value = &quot;/org.openoffice.Office.Paths/Paths&quot;
+        settings = configProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, params() )
+
+        path = settings.Template.WritePath
+        convService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+        path = convService.substituteVariables(path, true)
+        path = ConvertToUrl(path)
+        getTemplatePath = path
+
+End Function
+
+
 
 Private Sub disposeAllLinks()
 	Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
@@ -148,7 +196,7 @@ Private Sub cleanFormatting
 
 End Sub
 
-Private Sub fixTableAnchors()
+Private Sub fixTableWidth()
 	Dim table As Object
 	Dim tables As Object
 	tables = ThisComponent.TextTables
@@ -161,6 +209,20 @@ Private Sub fixTableAnchors()
 		EndIf
 		If table.RelativeWidth = 0 Then
 			table.RelativeWidth = 100
+		EndIf
+	Next
+End Sub
+
+Private Sub fixDrawingAnchors()
+	Dim drawing As Object
+	Dim drawings As Object
+	drawings = ThisComponent.DrawPage
+	Dim count As Long
+	count = drawings.getCount()
+	For i = 0 To count - 1
+		drawing = drawings.getByIndex(i)
+		If drawing.AnchorType= com.sun.star.text.TextContentAnchorType.AT_PAGE Then
+			drawing.AnchorType = com.sun.star.text.TextContentAnchorType.AT_PARAGRAPH
 		EndIf
 	Next
 End Sub
@@ -262,8 +324,6 @@ Private Sub doNotTrack
 	dispatcher.executeDispatch(document, &quot;.uno:ShowTrackedChanges&quot;, &quot;&quot;, 0, args1())
 End Sub
 
-
-
 Private Sub removeDirectFormatting
 	Dim oDescriptor &apos;The search descriptor
 	dim dispatcher as Object
@@ -272,6 +332,9 @@ Private Sub removeDirectFormatting
 	document   = ThisComponent.CurrentController.Frame
 	Dim oViewCursor As Object &apos;View cursor
 	oViewCursor = ThisComponent.CurrentController.getViewCursor()
+ &apos;	Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
+&apos;	Mri oViewCursor
+	oViewCursor.jumpToFirstPage()
 	oViewCursor.gotoStart(false)
 	oViewCursor.gotoEnd(true)
 	dispatcher.executeDispatch(document, &quot;.uno:ResetAttributes&quot;, &quot;&quot;, 0, Array())
