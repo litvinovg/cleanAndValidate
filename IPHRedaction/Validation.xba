@@ -71,7 +71,7 @@ Sub workaroundForDiacriticKerningBug
 	    AskAndReplace("([:print:][\u0300-\u036F])","$1")
 End Sub
 
-Sub validate
+Sub validateButton
 	MsgBox "Validation works!"
 End Sub
 

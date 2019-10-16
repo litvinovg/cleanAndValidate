@@ -35,18 +35,30 @@
 				    <value xml:lang="ru">Панель редактора</value> 
 				   </prop>
 				  <prop oor:name="URL" oor:type="xs:string">
-			 		<value>macro:///IPHRedaction.Validation.validate</value>
+			 		<value>macro:///IPHRedaction.Validation.validateButton</value>
 				  </prop>
 				  <prop oor:name="Target" oor:type="xs:string">
 				    <value>_self</value>
 				  </prop>
 				  <prop oor:name="ImageIdentifier" oor:type="xs:string">
-			 		<value>%origin%/icons/img-48</value>
+		            <value>%origin%/IPHRedaction/validate</value>
 				  </prop>
 				</node>
 			    <node oor:name="buttonClean" oor:op="replace">
 				  <prop oor:name="Context" oor:type="xs:string">
 				    <value>com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
+				  </prop>
+				  <prop oor:name="Title" oor:type="xs:string">
+				    <value xml:lang="ru">Панель редактора</value> 
+				   </prop>
+				  <prop oor:name="URL" oor:type="xs:string">
+			 		<value>macro:///IPHRedaction.Clean.cleanButton</value>
+				  </prop>
+				  <prop oor:name="Target" oor:type="xs:string">
+				    <value>_self</value>
+				  </prop>
+				  <prop oor:name="ImageIdentifier" oor:type="xs:string">
+		            <value>%origin%/IPHRedaction/testfont</value>
 				  </prop>
 				</node>
 			</node>
@@ -59,14 +71,14 @@
 		        <value xml:lang="en">Validation</value>  
 		      </prop>
 		      <prop oor:name="URL" oor:type="xs:string">
-				<value>macro:///IPHRedaction.Validation.validate</value>
+				<value>macro:///IPHRedaction.Validation.validateButton</value>
 		      </prop>
 		      <prop oor:name="Target" oor:type="xs:string">
 		        <value>_self</value>
 		      </prop>
-		      <prop oor:name="ImageIdentifier" oor:type="xs:string">
-			 	<value>%origin%/icons/img-48.png</value>
-		      </prop>
+			  <prop oor:name="ImageIdentifier" oor:type="xs:string">
+	            <value>%origin%/IPHRedaction/validate</value>
+			  </prop>
 		    </node>
 			<node oor:name="buttonClean" oor:op="replace">
 		      <prop oor:name="Context" oor:type="xs:string">
@@ -82,9 +94,9 @@
 		      <prop oor:name="Target" oor:type="xs:string">
 		        <value>_self</value>
 		      </prop>
-		      <prop oor:name="ImageIdentifier" oor:type="xs:string">
-			 	<value>%origin%/icons/img-48.png</value>
-		      </prop>
+			  <prop oor:name="ImageIdentifier" oor:type="xs:string">
+	            <value>%origin%/IPHRedaction/testfont</value>
+			  </prop>
 		    </node>
 		    
 
