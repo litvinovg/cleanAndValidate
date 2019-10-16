@@ -12,8 +12,90 @@
 	doNotTrack
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
 	cleanFormatting
+	disposePageBreaks
+	disposeAllLinks
+	disposeAllBookmarks
 	statusIndicator.end()
 	saveAndreload()
+End Sub
+
+Private Sub disposeAllLinks()
+	Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
+	SrchAttributes(0).Name = &quot;CharStyleName&quot;
+	SrchAttributes(0).Value = &quot;Internet Link&quot;
+	Dim ReplAttributes(2) as new com.sun.star.beans.PropertyValue
+	ReplAttributes(0).Name = &quot;HyperlinkTarget&quot;
+	ReplAttributes(0).Value = &quot;&quot;
+	ReplAttributes(1).Name = &quot;HyperLinkURL&quot;
+	ReplAttributes(1).Value = &quot;&quot;
+	ReplAttributes(2).Name = &quot;CharStyleName&quot;
+	ReplAttributes(2).Value = ThisComponent.getStyleFamilies().getByIndex(0).ElementNames(0)
+	setAttributesBySearchPattern(searchPattern,SrchAttributes,ReplAttributes)
+End Sub
+
+Private Sub disposeAllBookmarks()
+	Dim bookmarks As Object
+	Dim elementName As String
+	elementName = ThisComponent.Links.ElementNames(6)
+	bookmarks = ThisComponent.Links.getByName(elementName)
+	While bookmarks.hasElements()
+		bookmark = bookmarks.getByName(bookmarks.ElementNames(0))
+		bookmark.dispose()
+	Wend
+End Sub
+
+
+Private Sub disposePageBreaks
+	oTextCursor = ThisComponent.Text.CreateTextCursor()
+	enum1 = ThisComponent.Text.createEnumeration
+	While enum1.hasMoreElements
+		enum1Element = enum1.nextElement
+		If enum1Element.supportsService(&quot;com.sun.star.text.Paragraph&quot;) Then
+			If enum1Element.BreakType &lt;&gt; com.sun.star.style.BreakType.NONE Then
+				oTextCursor.goToRange(enum1Element.getAnchor(), false)
+				If NOT IsEmpty(oTextCursor.PageDescName) Then
+					oTextCursor.PageDescName = &quot;&quot;
+				End If
+				oTextCursor.BreakType = com.sun.star.style.BreakType.NONE
+			End If
+		ElseIf enum1Element.supportsService(&quot;com.sun.star.text.TextTable&quot;) Then
+			If NOT IsEmpty(enum1Element.PageDescName) Then
+				enum1Element.PageDescName = &quot;&quot;
+			End If
+			enum1Element.BreakType = com.sun.star.style.BreakType.NONE
+		EndIf
+	Wend
+End Sub
+
+Private Sub setAttributesBySearchPattern(searchPattern As String, SrchAttributes, ReplAttributes)
+	
+	Dim oSearch
+	Dim oTextCursor As Object 
+	Dim oViewCursor As Object
+	Dim lineIndent
+	Dim foundPatterns() As Object
+	document   = ThisComponent.CurrentController.Frame
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+	oSearch = ThisComponent.createSearchDescriptor()
+	oSearch.SearchString = searchPattern
+	oSearch.SearchRegularExpression=True
+    oSearch.SearchAll = True
+    oSearch.searchStyles = true
+    If Not IsEmpty(SrchAttributes(0).Value) Then
+      oSearch.SetSearchAttributes(SrchAttributes())
+    End If
+	oFound = ThisComponent.findFirst(oSearch)
+	Do While Not IsNull(oFound)
+	  For i = LBound(ReplAttributes) To Ubound(ReplAttributes)
+  	&apos;	Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
+	&apos;  	Mri oFound
+	  	If oFound.getPropertySetInfo.hasPropertyByName(ReplAttributes(i).Name) Then
+		  oFound.SetPropertyValue(ReplAttributes(i).Name,ReplAttributes(i).Value)
+		EndIf
+	  Next i	  
+	  oFound = ThisComponent.findNext(oFound.End, oSearch)
+	Loop
+
 End Sub
 
 Private Sub saveAndreload()
