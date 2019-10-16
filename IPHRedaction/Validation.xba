@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub fixFrequentMistakes
+	Dim description As String
+	description = "Вы уверены, что хотите запустить исправление часто встречающихся ошибок?"
+	If NOT confirm(description) Then
+		Exit Sub
+	EndIf
+	saveDocument()
+	saveVersion("Перед выполнением макроса Ошибки")
+	StopTracking
+	Dim statusIndicator as Object
+	Dim NBSP As String
+	Dim space As String
+	NBSP = " "
+	space = " "
+	
+	statusIndicator = ThisComponent.getCurrentController.statusIndicator
+	statusIndicator.Start("Исправление ошибок начато, подождите",30)
+	'Не должно быть символов табуляции
+    AskAndReplace("\t","")
+    'Не должно быть подряд больше одного пробела
+    AskAndReplace("(?&lt;=[:space:])[:space:]+","")
+	'Не должно быть ни одного пробела в начале абзацев
+    AskAndReplace("^[:space:]+","")
+    'Не должно быть пробелов в конце абзацев
+    AskAndReplace("[:space:]+$","")
+    'Не должно быть пустых абзацев
+    AskAndReplace("^$","")
+    'Не должно быть пробелов перед знаками пунктуации .,;:?!)]}»¡¿”‘’
+   	AskAndReplace("[:space:]+(?=[\.,;:?!\)\]\}»¡¿”‘’])","")
+	'Между словом том и цифрой должен быть неразрывный пробел, а не обычный
+	AskAndReplace("(?&lt;=\b[тТ](ом|\.))\ (?=[:digit:])",NBSP)
+	'Между словом серия и цифрой должен быть неразрывный пробел, а не обычный
+	AskAndReplace("(?&lt;=\b[сС](ерия|\.))\ +(?=[:digit:])",NBSP)
+	'Между словом часть и цифрой должен быть неразрывный пробел, а не обычный
+	AskAndReplace("(?&lt;=\b[чЧ](асть|\.))\ +(?=[:digit:])",NBSP)
+	'Между числом и "г." должен быть неразрывный пробел, а не обычный
+	AskAndReplace("(?&lt;=[0-9])[:space:]*г(?=\.)",NBSP &amp; "г")
+	'Между инициалами и Фамилией должен быть неразрывный пробел, а не обычный
+	AskAndReplace("(?&lt;=[:upper:]\.[:space:][:upper:]\.)\ (?=[:upper:][:lower:]+)",NBSP)
+	'Между Фамилией и инициалами должен быть неразрывный пробел, а не обычный
+	AskAndReplace("(?&lt;=[:upper:][:lower:]{1,30})\ (?=[:upper:]\.[:space:][:upper:]\.)",NBSP)
+
+	'Не должно быть пробелов после скобок [({ и кавычек «„
+	AskAndReplace("(?&lt;=[\(\[\{«„])[:space:]","")
+	'Между "и" и "т." должен быть неразрывный пробел, а не обычный
+    AskAndReplace("(?&lt;=\bи)\ (?=т\.)",NBSP)
+   	'Между "т." и "е./н./д./п./к." должен быть неразрывный пробел, а не обычный
+    AskAndReplace("(?&lt;=\bт)\.\ ?(?=[ендпк]\.)","." &amp; NBSP)
+    
+   	'Между буквами среднее тире должно обрамляться пробелами
+	AskAndReplace("(?&lt;=[:alpha:])–(?=[:alpha:])",NBSP &amp; "–" &amp; NBSP)
+	'Между буквами дефис-минус, цифровое тире и длинное тире заменяется на среднее тире
+    AskAndReplace("(?&lt;=[:alpha:][:space:])[-‒—](?=[:space:][:alpha:])","–")
+    'Между двумя цифрами и тире между ними не долнжо быть пробелов. А также тире должно быть цифровым
+  	AskAndReplace("(?&lt;=[:digit:])(?:[:space:])?[-‒–—](?:[:space:])?(?=[:digit:])","‒")
+ 	
+ 	'Между двумя римскими цифрами и тире между ними не долнжо быть пробелов. А также тире должно быть средним
+	AskAndReplace("(?&lt;=[MDCLXVI])(?:[:space:])?[-‒–—](?:[:space:])?(?=[MDCLXVI])","–")
+	
+	'Между буквой и угловой открывающейся скобкой должен быть пробел
+	AskAndReplace("(?&lt;=[:alpha:])&lt;(?=…&gt;)",space &amp; "&lt;")
+	'Между угловой закрывающейся скобкой и буквой должен быть пробел
+	AskAndReplace("(?&lt;=&lt;…)&gt;(?=[:alpha:])","&gt;" &amp; space)
+	statusIndicator.end()
+	saveAndreload()
+End Sub
+
+Sub workaroundForDiacriticKerningBug
+	    AskAndReplace("([:print:][\u0300-\u036F])","$1")
+End Sub
+
+Sub validate
+	MsgBox TEST WORKS
+End Sub
+
+Sub executeCitationCorrection
+	StartTracking
+	    AskAndReplace("(?&lt;=[:alpha:])&lt;(?=…&gt;)"," &lt;")
+	    AskAndReplace("(?&lt;=&lt;…)&gt;(?=[:alpha:])","&gt; ")
+	    AskAndReplace("(?&lt;=[:alpha:])–(?=[:alpha:])"," – ")
+	StopTracking
+End Sub
+
+
+Sub executeRemoveConsequentSpaces
+	StartTracking
+	    AskAndReplace("(?&lt;=[:space:])[:space:]+","")
+	StopTracking
+End Sub
+Sub removeBadCharacters
+	StartTracking
+	    AskAndReplace("[\uE000-\uF8FF]+","")
+	    checkAllFootnotes
+	StopTracking
+	showTrackedChanges
+End Sub
+
+Sub executeRemoveSpacesBeforeStops
+	StartTracking
+	    AskAndReplace("[:space:]+(?=[\.,;:?!\)\]\}»¡¿”‘’])","")
+'removed “
+	StopTracking
+End Sub
+
+Sub executeNumericDashBetweenNumbers
+	StartTracking
+	    AskAndReplace("(?&lt;=[:digit:])(?:[:space:])?[-‒–—](?:[:space:])?(?=[:digit:])","‒")
+	StopTracking
+End Sub
+
+Sub executeReplaceLongDashWithSpacesBetweenWords
+	StartTracking
+	    AskAndReplace("(?&lt;=[:alpha:][:space:])[-‒—](?=[:space:][:alpha:])","–")
+	StopTracking
+End Sub
+
+Sub executeRemoveSpacesAfterOpenedQuoteOrBracket
+	StartTracking
+	    AskAndReplace("(?&lt;=[\(\[\{«„])[:space:]","")
+	StopTracking
+End Sub
+
+
+Sub executeNonBreakingSpaceBetweenLastnameAndInitials
+	StartTracking
+	    AskAndReplace("(?&lt;=[^.!?][:space:][:upper:][:lower:]{1,30})\ (?=[:upper:]\.[:upper:]\.)"," ")
+	StopTracking
+End Sub
+
+
+Sub executeNonBreakingSpaceBetweenInitialsAndLastName
+	StartTracking
+	    AskAndReplace("(?&lt;=[:upper:]\.[:upper:]\.)\ (?=[:upper:][:lower:]+)"," ")
+	StopTracking
+End Sub
+
+Sub executeNonBreakingSpaceBetweenEtc
+	StartTracking
+	    AskAndReplace("(?&lt;=\bи)\ (?=т\.)"," ")
+	    AskAndReplace("(?&lt;=\bт)\.\ ?(?=[ендпк]\.)",". ")
+	StopTracking
+End Sub
+
+'Sub executeNonBreakingSpaceAfterPageOrVolume
+'	StartTracking
+'	    AskAndReplace("(?&lt;=\b[сСтТ]\.)[:space:](?=[:digit:])"," ")
+'	StopTracking
+'End Sub
+
+Sub executeNonBreakingSpaceBetweenVol
+	StartTracking
+      AskAndReplace("(?&lt;=\b[тТ](ом|\.))[:space:](?=[:digit:])"," ")
+	StopTracking
+End Sub
+
+Sub executeNonBreakingSpaceBetweenSeries
+	StartTracking
+	    AskAndReplace("(?&lt;=\b[сС](ерия|\.))[:space:](?=[:digit:])"," ")
+	StopTracking
+End Sub
+
+Sub executeNonBreakingSpaceBetweenPart
+    StartTracking
+	AskAndReplace("(?&lt;=\b[чЧ](асть|\.))[:space:]+(?=[:digit:])"," ")
+	StopTracking
+End Sub
+
+
+Sub executeNonBreakingSpaceBetweenYear
+	StartTracking
+    AskAndReplace("(?&lt;=[0-9])[:space:]*г(?=\.)"," г")
+	StopTracking
+End Sub
+
+Sub StartTracking
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+document   = ThisComponent.CurrentController.Frame
+dim trackProperties(0) as new com.sun.star.beans.PropertyValue
+trackProperties(0).Name = "TrackChanges"
+trackProperties(0).Value = true
+dispatcher.executeDispatch(document, ".uno:TrackChanges", "", 0, trackProperties())
+dim args1(0) as new com.sun.star.beans.PropertyValue
+args1(0).Name = "ShowTrackedChanges"
+args1(0).Value = true
+dispatcher.executeDispatch(document, ".uno:ShowTrackedChanges", "", 0, args1())
+End Sub
+
+Sub StopTracking
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+document   = ThisComponent.CurrentController.Frame
+dim trackProperties(0) as new com.sun.star.beans.PropertyValue
+trackProperties(0).Name = "TrackChanges"
+trackProperties(0).Value = false
+dispatcher.executeDispatch(document, ".uno:TrackChanges", "", 0, trackProperties())
+dim args1(0) as new com.sun.star.beans.PropertyValue
+args1(0).Name = "ShowTrackedChanges"
+args1(0).Value = true
+dispatcher.executeDispatch(document, ".uno:ShowTrackedChanges", "", 0, args1())
+End Sub
+
+
+
+Sub executeRemoveWhiteBackground
+ 	Dim description As String
+ 	Dim searchPattern As String
+ 	searchPattern = ""
+ 	description = "Вы уверены, что хотите заменить белый фон на прозрачный в текущем документе?"
+ 	If NOT confirm(description) Then
+ 		Exit Sub
+ 	EndIf
+	Dim statusIndicator as Object
+	statusIndicator = ThisComponent.getCurrentController.statusIndicator
+	statusIndicator.Start("Замена белого фона на прозрачный начата",100)
+	Dim SrchAttributes(1) as new com.sun.star.beans.PropertyValue
+	Dim ReplAttributes(1) as new com.sun.star.beans.PropertyValue
+	SrchAttributes(0).Name = "CharBackTransparent"
+	SrchAttributes(0).Value = False
+	SrchAttributes(1).Name = "CharBackColor"
+	SrchAttributes(1).Value = 16777215
+	ReplAttributes(0).Name = "CharBackTransparent"
+	ReplAttributes(0).Value = True
+	ReplAttributes(1).Name = "CharBackColor"
+	ReplAttributes(1).Value = -1
+	setAttributesBySearchPattern(searchPattern,SrchAttributes,ReplAttributes)
+	statusIndicator.end()
+End Sub
+
+Sub ReplaceEverywhere(SearchString,oReplaceString)
+Dim oDoc,oText,oViewCursor,oStart,oEnd,oFind,FandR As Object
+oDoc = ThisComponent 
+oText = oDoc.Text
+Footnotes = oDoc.Footnotes
+oViewCursor = oDoc.CurrentController.getViewCursor
+oStart = oViewCursor.Text.createTextCursorByRange(oViewCursor.Start)
+FandR = oDoc.createReplaceDescriptor
+With FandR
+  .SearchString = SearchString
+  .ReplaceString = oReplaceString
+  .SearchRegularExpression=True
+  .searchAll=True
+End With
+If Not oViewCursor.isCollapsed then 
+  oEnd = oViewCursor.Text.createTextCursorByRange(oViewCursor.End)
+End If
+If isEmpty(oEnd) then 'Do whole document.
+  oDoc.replaceAll(FandR)
+Else 'Do selection.
+  Do
+    oFind = oDoc.FindNext(oStart.End,FandR)
+    If isNull(oFind) then
+      Exit Do
+    End If
+    If oViewCursor.Text.compareRegionEnds(oFind,oEnd) &lt; 0 then 
+      Exit Do
+    End If
+    oFind.setString(FandR.ReplaceString)
+    oFind = oDoc.FindNext(oFind.End,FandR)
+  Loop
+EndIf
+End Sub
+
+
+Function IsAnythingSelected(oDoc As Object) As Boolean
+Dim oSelections 'Contains all of the selections
+Dim oSel
+'Contains one specific selection
+Dim oCursor
+'Text cursor to check for a collapsed range
+REM Assume nothing is selected
+IsAnythingSelected = False
+If IsNull(ThisComponent) Then 
+  Exit Function
+End If
+' The current selection in the current controller.
+'If there is no current controller, it returns NULL.
+oSelections = ThisComponent.getCurrentSelection()
+If IsNull(oSelections) Then 
+  Exit Function
+End If
+If oSelections.getCount() = 0 Then 
+  Exit Function
+End If
+If oSelections.getCount() &gt; 1 Then
+  REM There is more than one selection so return True
+  IsAnythingSelected = True
+  Exit Function
+End If
+REM There is only one selection so obtain the first selection
+oSel = oSelections.getByIndex(0)
+lenght = Len(oSel.String)
+If lenght &gt; 0 Then
+  IsAnythingSelected = True
+End If
+
+End Function
+
+
+Sub AskAndReplace(SearchString, oReplaceString)
+Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
+Dim ReplAttributes(0) as new com.sun.star.beans.PropertyValue
+If IsAnythingSelected() Then
+  oSelections = ThisComponent.getCurrentSelection()
+  ReplaceInSelection(SearchString, oReplaceString)
+  thisComponent.currentController.select(oSelections) 
+Else
+ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
+'  ReplaceEverywhere(SearchString, oReplaceString)
+End If
+End Sub
+
+
+
+
+Sub ReplaceInSelection(SearchString,oReplaceString)
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+
+rem ----------------------------------------------------------------------
+dim args1(21) as new com.sun.star.beans.PropertyValue
+args1(0).Name = "SearchItem.StyleFamily"
+args1(0).Value = 2
+args1(1).Name = "SearchItem.CellType"
+args1(1).Value = 0
+args1(2).Name = "SearchItem.RowDirection"
+args1(2).Value = true
+args1(3).Name = "SearchItem.AllTables"
+args1(3).Value = false
+args1(4).Name = "SearchItem.SearchFiltered"
+args1(4).Value = false
+args1(5).Name = "SearchItem.Backward"
+args1(5).Value = false
+args1(6).Name = "SearchItem.Pattern"
+args1(6).Value = false
+args1(7).Name = "SearchItem.Content"
+args1(7).Value = false
+args1(8).Name = "SearchItem.AsianOptions"
+args1(8).Value = false
+args1(9).Name = "SearchItem.AlgorithmType"
+args1(9).Value = 1
+args1(10).Name = "SearchItem.SearchFlags"
+args1(10).Value = 71680
+args1(11).Name = "SearchItem.SearchString"
+args1(11).Value = SearchString
+args1(12).Name = "SearchItem.ReplaceString"
+args1(12).Value = oReplaceString
+args1(13).Name = "SearchItem.Locale"
+args1(13).Value = 255
+args1(14).Name = "SearchItem.ChangedChars"
+args1(14).Value = 2
+args1(15).Name = "SearchItem.DeletedChars"
+args1(15).Value = 2
+args1(16).Name = "SearchItem.InsertedChars"
+args1(16).Value = 2
+args1(17).Name = "SearchItem.TransliterateFlags"
+args1(17).Value = 1024
+args1(18).Name = "SearchItem.Command"
+args1(18).Value = 3
+args1(19).Name = "SearchItem.SearchFormatted"
+args1(19).Value = false
+args1(20).Name = "SearchItem.AlgorithmType2"
+args1(20).Value = 2
+args1(21).Name = "Quiet"
+args1(21).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args1())
+
+
+end Sub
+
+
+
+
+
+sub insertSpecialCharacterInFont(sCharacter As String, sFont As String)
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+
+rem ----------------------------------------------------------------------
+dim args1(1) as new com.sun.star.beans.PropertyValue
+args1(0).Name = "Symbols"
+args1(0).Value = sCharacter
+args1(1).Name = "FontName"
+args1(1).Value = sFont
+
+dispatcher.executeDispatch(document, ".uno:InsertSymbol", "", 0, args1())
+
+end Sub
+
+
+Sub searchAndRemoveDirectFormatting(searchString)
+oViewCursor = thisComponent.getCurrentController.getViewCursor
+oViewCursor.jumpToFirstPage
+oSearch = ThisComponent.createSearchDescriptor()
+oSearch.SearchString = searchString
+oSearch.SearchRegularExpression=True
+oSearch.searchAll=True
+oFound = ThisComponent.findFirst(oSearch)
+Do While Not IsNull(oFound)
+  oTextCursor = oFound.Text.createTextCursor()
+  oFound.setString(oFound.getString)
+  oFound = ThisComponent.findNext(oFound.End, oSearch)
+Loop
+End Sub
+
+
+sub RemoveStyleByName(styleName As String)
+Dim oDoc as Object
+Dim propertySetInfo As Object
+oDoc = ThisComponent
+oFamilies = thiscomponent.StyleFamilies
+sElements() = oFamilies.getElementNames()
+For i = 0 to oFamilies.count -1 
+  oFamily = oFamilies.getByName(sElements(i))
+  For j = 0 to oFamily.getCount -1
+    oStyle = oFamily.getByIndex(j)
+
+    If oStyle.Name = styleName Then
+      oFamily.removeByName(oStyle.Name)
+      Exit For
+    EndIf
+  Next
+Next
+End Sub
+
+sub showTrackedChanges
+	dim document   as object
+	dim dispatcher as object
+	document   = ThisComponent.CurrentController.Frame
+	dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+	dispatcher.executeDispatch(document, ".uno:AcceptTrackedChanges", "", 0, Array())
+	dim args2(0) as new com.sun.star.beans.PropertyValue
+	args2(0).Name = "ShowTrackedChanges"
+	args2(0).Value = true
+	dispatcher.executeDispatch(document, ".uno:ShowTrackedChanges", "", 0, args2())
+
+end sub
+
+Sub checkAllFootnotes()
+	Dim footnotes As Object
+	Dim count as Integer
+	Dim charNum as Long
+	Dim char As Long
+	Dim label As String
+	Dim result As String
+	result = ""
+	footnotes = ThisComponent.Footnotes
+	count = footnotes.getCount
+	For i = 0 to count-1
+		footnote = footnotes.getByIndex(i)
+'		Mri footnote
+		label = footnote.Label
+		charNum = Len(label)
+		For j = 1 to charNum
+		  char = Asc(Right(Left(label,j),1))
+		  If char &gt;= 57344 AND char &lt;= 63743 then
+		  	result = result &amp; "Символ "&amp; Chr(char) &amp;" сноски "&amp; i &amp;" находится в диапазоне для частного использования"&amp; chr(10)
+		  	'Mri footnote
+		  	'footNote.setLabel(Left(label,j-1) &amp; "*" &amp; Right(label,charNum-j))
+		  End If
+		Next j
+	Next i
+	If result &lt;&gt; "" then
+		MsgBox result
+	EndIf
+End Sub
+</script:module>

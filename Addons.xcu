@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+﻿<?xml version='1.0' encoding='UTF-8'?>
 <oor:component-data xmlns:oor="http://openoffice.org/2001/registry"
                     xmlns:xs="http://www.w3.org/2001/XMLSchema"
                     oor:name="Addons"
@@ -14,7 +14,7 @@
 				<value xml:lang="ru">Расширение для подготовки рукописей к изданию</value>
 			</prop>
 			<prop oor:name="URL" oor:type="xs:string">
-			  <value>macro:///IPHPreparation.Validation.validate</value>
+			  <value>macro:///IPHRedaction.Validation.validate</value>
 			</prop>
 			<prop oor:name="Target" oor:type="xs:string">
 			  <value>_self</value>
@@ -35,7 +35,7 @@
 				    <value xml:lang="ru">Панель редактора</value> 
 				   </prop>
 				  <prop oor:name="URL" oor:type="xs:string">
-			 		<value>macro:///IPHPreparation.Validation.validate</value>
+			 		<value>macro:///IPHRedaction.Validation.validate</value>
 				  </prop>
 				  <prop oor:name="Target" oor:type="xs:string">
 				    <value>_self</value>
@@ -51,10 +51,10 @@
 		      </prop>
 		      <prop oor:name="Title" oor:type="xs:string">
 		        <value xml:lang="ru">Проверка</value>
-		        <value xml:lang="ru">Validation</value>  
+		        <value xml:lang="en">Validation</value>  
 		      </prop>
 		      <prop oor:name="URL" oor:type="xs:string">
-				<value>macro:///IPHPreparation.Validation.validate</value>
+				<value>macro:///IPHRedaction.Validation.validate</value>
 		      </prop>
 		      <prop oor:name="Target" oor:type="xs:string">
 		        <value>_self</value>

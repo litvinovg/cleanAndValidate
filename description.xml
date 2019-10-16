@@ -11,8 +11,8 @@
   </display-name>
   <registration>
     <simple-license accept-by="admin" suppress-on-update="true" suppress-if-required="true" >
-      <license-text xlink:href="license/licensenotice_lgpl_en.txt" lang="en" />
-      <license-text xlink:href="license/licensenotice_lgpl_ru.txt" lang="ru" />
+      <license-text xlink:href="license/license_en.txt" lang="en" />
+      <license-text xlink:href="license/license_ru.txt" lang="ru" />
     </simple-license>
   </registration >
   <dependencies>
