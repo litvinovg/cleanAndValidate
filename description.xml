@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description xmlns="http://openoffice.org/extensions/description/2006"
+             xmlns:dep="http://openoffice.org/extensions/description/2006"
+             xmlns:xlink="http://www.w3.org/1999/xlink">
+  <identifier value="pro.litvinovg.Redaction" />
+  <version value="0.0.1" />
+  <platform value="all" />
+  <display-name>
+    <name lang="en">Redaction for publishing in Institute of philosophy</name>
+    <name lang="ru">Подготовка рукописей к изданию в Институте философии</name>
+  </display-name>
+  <registration>
+    <simple-license accept-by="admin" suppress-on-update="true" suppress-if-required="true" >
+      <license-text xlink:href="license/licensenotice_lgpl_en.txt" lang="en" />
+      <license-text xlink:href="license/licensenotice_lgpl_ru.txt" lang="ru" />
+    </simple-license>
+  </registration >
+  <dependencies>
+    <OpenOffice.org-minimal-version value="4.1" dep:name="OpenOffice.org, LibreOffice 4.1 or later" />
+  </dependencies>
+  <publisher>
+    <name xlink:href="mailto:public@litvinovg.pro" lang="en">Georgy Litvinov</name>
+  </publisher>
+  <release-notes>
+    <src xlink:href="releasenotes.txt" lang="en" />
+  </release-notes>
+  <extension-description>
+    <src xlink:href="description/description_ru.txt" lang="ru" />
+  </extension-description>
+  
+  <icon>
+    <default xlink:href="images/img-48.png" />
+    <high-contrast xlink:href="images/img-48.png" />
+  </icon>
+</description>
+
