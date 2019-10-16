@@ -1,12 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub valButtonMark
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markY
 
 End Sub
-
 
 Sub validateButton
-	MsgBox &quot;Validation works!&quot;
+	removeBadCharacters
 End Sub
 
+Private Sub removeBadCharacters
+	StartTracking
+	    AskAndReplace(&quot;[\uE000-\uF8FF]+&quot;,&quot;&quot;)
+	    checkAllFootnotes
+	StopTracking
+	showTrackedChanges
+End Sub
+
+Private Sub checkAllFootnotes()
+	Dim footnotes As Object
+	Dim count as Integer
+	Dim charNum as Long
+	Dim char As Long
+	Dim label As String
+	Dim result As String
+	result = &quot;&quot;
+	footnotes = ThisComponent.Footnotes
+	count = footnotes.getCount
+	For i = 0 to count-1
+		footnote = footnotes.getByIndex(i)
+&apos;		Mri footnote
+		label = footnote.Label
+		charNum = Len(label)
+		For j = 1 to charNum
+		  char = Asc(Right(Left(label,j),1))
+		  If char &gt;= 57344 AND char &lt;= 63743 then
+		  	result = result &amp; &quot;Символ &quot;&amp; Chr(char) &amp;&quot; сноски &quot;&amp; i &amp;&quot; находится в диапазоне для частного использования&quot;&amp; chr(10)
+		  	&apos;Mri footnote
+		  	&apos;footNote.setLabel(Left(label,j-1) &amp; &quot;*&quot; &amp; Right(label,charNum-j))
+		  End If
+		Next j
+	Next i
+	If result &lt;&gt; &quot;&quot; then
+		MsgBox result
+	EndIf
+End Sub
+
+Private Sub showTrackedChanges
+	dim document   as object
+	dim dispatcher as object
+	document   = ThisComponent.CurrentController.Frame
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+	dispatcher.executeDispatch(document, &quot;.uno:AcceptTrackedChanges&quot;, &quot;&quot;, 0, Array())
+	dim args2(0) as new com.sun.star.beans.PropertyValue
+	args2(0).Name = &quot;ShowTrackedChanges&quot;
+	args2(0).Value = true
+	dispatcher.executeDispatch(document, &quot;.uno:ShowTrackedChanges&quot;, &quot;&quot;, 0, args2())
+
+end Sub
+
+Private Sub StartTracking
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+	document   = ThisComponent.CurrentController.Frame
+	dim trackProperties(0) as new com.sun.star.beans.PropertyValue
+	trackProperties(0).Name = &quot;TrackChanges&quot;
+	trackProperties(0).Value = true
+	dispatcher.executeDispatch(document, &quot;.uno:TrackChanges&quot;, &quot;&quot;, 0, trackProperties())
+	dim args1(0) as new com.sun.star.beans.PropertyValue
+	args1(0).Name = &quot;ShowTrackedChanges&quot;
+	args1(0).Value = true
+	dispatcher.executeDispatch(document, &quot;.uno:ShowTrackedChanges&quot;, &quot;&quot;, 0, args1())
+End Sub
+
+Private Sub StopTracking
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+	document   = ThisComponent.CurrentController.Frame
+	dim trackProperties(0) as new com.sun.star.beans.PropertyValue
+	trackProperties(0).Name = &quot;TrackChanges&quot;
+	trackProperties(0).Value = false
+	dispatcher.executeDispatch(document, &quot;.uno:TrackChanges&quot;, &quot;&quot;, 0, trackProperties())
+	dim args1(0) as new com.sun.star.beans.PropertyValue
+	args1(0).Name = &quot;ShowTrackedChanges&quot;
+	args1(0).Value = true
+	dispatcher.executeDispatch(document, &quot;.uno:ShowTrackedChanges&quot;, &quot;&quot;, 0, args1())
+End Sub
 </script:module>

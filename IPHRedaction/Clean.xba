@@ -41,11 +41,29 @@ Private Sub loadArticleStyles
     ThisComponent.StyleFamilies.loadStylesFromURL( filePath, aArgs() )
 End Sub
 
+Private Function CreateProperty( Optional cName As String, Optional uValue ) As com.sun.star.beans.PropertyValue
+	Dim oPropertyValue As New com.sun.star.beans.PropertyValue
+	If Not IsMissing( cName ) Then
+	  oPropertyValue.Name = cName
+	EndIf
+	If Not IsMissing( uValue ) Then
+	  oPropertyValue.Value = uValue
+	EndIf
+	CreateProperty() = oPropertyValue
+End Function
+
 Private Sub AskAndReplace(SearchString, oReplaceString)
 	Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
 	Dim ReplAttributes(0) as new com.sun.star.beans.PropertyValue
 	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
 End Sub
+
+Private Function DocHasCharStyle(oDoc, sName$) As Boolean
+	Dim oStyles
+	oStyles = oDoc.StyleFamilies.getByName(&quot;CharacterStyles&quot;)
+	DocHasCharStyle() = oStyles.hasByName(sName)
+End Function
+
 
 Private Function getTemplatePath() as String
         Dim ath as String
