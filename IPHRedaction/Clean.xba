@@ -15,6 +15,8 @@
 	disposePageBreaks
 	disposeAllLinks
 	disposeAllBookmarks
+	fixTableAnchors
+
 	statusIndicator.end()
 	saveAndreload()
 End Sub
@@ -144,6 +146,23 @@ Private Sub cleanFormatting
 	
 	removeUnusedStyles
 
+End Sub
+
+Private Sub fixTableAnchors()
+	Dim table As Object
+	Dim tables As Object
+	tables = ThisComponent.TextTables
+	Dim count As Long
+	count = ThisComponent.TextTables.getCount()
+	For i = 0 To count - 1
+		table = tables.getByIndex(i)
+		If table.HoriOrient = 6 Then
+			table.HoriOrient = 2
+		EndIf
+		If table.RelativeWidth = 0 Then
+			table.RelativeWidth = 100
+		EndIf
+	Next
 End Sub
 
 Sub manualFontsToCharStyle
