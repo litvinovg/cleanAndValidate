@@ -4,27 +4,7 @@
                     oor:name="Addons"
                     oor:package="org.openoffice.Office">
 	<node oor:name="AddonUI">
-	  <node oor:name="AddonMenu">
-		  <node oor:name="pro.litvinovg.IPHRedaction" oor:op="replace">
-			<prop oor:name="Context" oor:type="xs:string">
-			  <value>com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
-			</prop>
-			<prop oor:name="Title" oor:type="xs:string">
-				<value xml:lang="en">Extension for document publishing preparation</value> 
-				<value xml:lang="ru">Расширение для подготовки рукописей к изданию</value>
-			</prop>
-			<prop oor:name="URL" oor:type="xs:string">
-			  <value>macro:///IPHRedaction.Validation.validate</value>
-			</prop>
-			<prop oor:name="Target" oor:type="xs:string">
-			  <value>_self</value>
-			</prop>
-			<prop oor:name="ImageIdentifier" oor:type="xs:string">
-			  <value>%origin%/icons/img-48</value>
-			</prop>
-		  </node>
-		</node>
-		 <node oor:name="OfficeToolBar">
+	 	<node oor:name="OfficeToolBar">
 		  <node oor:name="pro.litvinovg.IPHRedaction.panel" oor:op="replace">
 			<node oor:name="ToolBarItems"> 
 				<node oor:name="buttonValidate" oor:op="replace">
@@ -40,9 +20,6 @@
 				  <prop oor:name="Target" oor:type="xs:string">
 				    <value>_self</value>
 				  </prop>
-				  <prop oor:name="ImageIdentifier" oor:type="xs:string">
-		            <value>%origin%/IPHRedaction/validate</value>
-				  </prop>
 				</node>
 			    <node oor:name="buttonClean" oor:op="replace">
 				  <prop oor:name="Context" oor:type="xs:string">
@@ -56,9 +33,6 @@
 				  </prop>
 				  <prop oor:name="Target" oor:type="xs:string">
 				    <value>_self</value>
-				  </prop>
-				  <prop oor:name="ImageIdentifier" oor:type="xs:string">
-		            <value>%origin%/IPHRedaction/testfont</value>
 				  </prop>
 				</node>
 			</node>
@@ -76,9 +50,6 @@
 		      <prop oor:name="Target" oor:type="xs:string">
 		        <value>_self</value>
 		      </prop>
-			  <prop oor:name="ImageIdentifier" oor:type="xs:string">
-	            <value>%origin%/IPHRedaction/validate</value>
-			  </prop>
 		    </node>
 			<node oor:name="buttonClean" oor:op="replace">
 		      <prop oor:name="Context" oor:type="xs:string">
@@ -86,7 +57,7 @@
 		      </prop>
 		      <prop oor:name="Title" oor:type="xs:string">
 		        <value xml:lang="ru">Чистка</value>
-		        <value xml:lang="en">Purification</value>  
+		        <value xml:lang="en">Cleaning</value>  
 		      </prop>
 		      <prop oor:name="URL" oor:type="xs:string">
 				<value>macro:///IPHRedaction.Clean.cleanButton</value>
@@ -94,14 +65,30 @@
 		      <prop oor:name="Target" oor:type="xs:string">
 		        <value>_self</value>
 		      </prop>
-			  <prop oor:name="ImageIdentifier" oor:type="xs:string">
-	            <value>%origin%/IPHRedaction/testfont</value>
-			  </prop>
 		    </node>
-		    
-
-		    
 		  </node>
 		</node>
+       <node oor:name="Images">	
+         <node oor:name="image-clean-button" oor:op="replace">
+           <prop oor:name="URL" oor:type="xs:string">
+             <value>macro:///IPHRedaction.Clean.cleanButton</value>
+           </prop>
+           <node oor:name="UserDefinedImages">
+             <prop oor:name="ImageBigURL">
+               <value>%origin%/icons/clean.png</value>
+             </prop>
+           </node>
+         </node>
+         <node oor:name="image-verify-button" oor:op="replace">
+           <prop oor:name="URL" oor:type="xs:string">
+             <value>macro:///IPHRedaction.Validation.validateButton</value>
+           </prop>
+           <node oor:name="UserDefinedImages">
+             <prop oor:name="ImageBigURL">
+               <value>%origin%/icons/validate.png</value>
+             </prop>
+           </node>
+         </node>
+       </node>
 	</node>
 </oor:component-data>

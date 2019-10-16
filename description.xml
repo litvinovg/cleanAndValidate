@@ -29,8 +29,8 @@
   </extension-description>
   
   <icon>
-    <default xlink:href="icons/img-48.png" />
-    <high-contrast xlink:href="icons/img-48.png" />
+    <default xlink:href="icons/addon_icon.png" />
+    <high-contrast xlink:href="icons/addon_icon.png" />
   </icon>
 </description>
 
