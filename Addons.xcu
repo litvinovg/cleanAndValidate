@@ -44,6 +44,11 @@
 			 		<value>%origin%/icons/img-48</value>
 				  </prop>
 				</node>
+			    <node oor:name="buttonClean" oor:op="replace">
+				  <prop oor:name="Context" oor:type="xs:string">
+				    <value>com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
+				  </prop>
+				</node>
 			</node>
 		    <node oor:name="buttonValidate" oor:op="replace">
 		      <prop oor:name="Context" oor:type="xs:string">
@@ -60,7 +65,25 @@
 		        <value>_self</value>
 		      </prop>
 		      <prop oor:name="ImageIdentifier" oor:type="xs:string">
-			 	<value>%origin%/icons/img-48</value>
+			 	<value>%origin%/icons/img-48.png</value>
+		      </prop>
+		    </node>
+			<node oor:name="buttonClean" oor:op="replace">
+		      <prop oor:name="Context" oor:type="xs:string">
+		        <value>com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
+		      </prop>
+		      <prop oor:name="Title" oor:type="xs:string">
+		        <value xml:lang="ru">Чистка</value>
+		        <value xml:lang="en">Purification</value>  
+		      </prop>
+		      <prop oor:name="URL" oor:type="xs:string">
+				<value>macro:///IPHRedaction.Clean.cleanButton</value>
+		      </prop>
+		      <prop oor:name="Target" oor:type="xs:string">
+		        <value>_self</value>
+		      </prop>
+		      <prop oor:name="ImageIdentifier" oor:type="xs:string">
+			 	<value>%origin%/icons/img-48.png</value>
 		      </prop>
 		    </node>
 		    

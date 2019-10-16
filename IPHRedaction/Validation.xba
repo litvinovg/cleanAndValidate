@@ -72,7 +72,7 @@ Sub workaroundForDiacriticKerningBug
 End Sub
 
 Sub validate
-	MsgBox TEST WORKS
+	MsgBox "Validation works!"
 End Sub
 
 Sub executeCitationCorrection

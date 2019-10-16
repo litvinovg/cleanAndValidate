@@ -67,12 +67,11 @@
 	saveAndreload()
 End Sub
 
+Sub cleanButton
+	MsgBox "Clean Works!"
+End Sub
 Sub workaroundForDiacriticKerningBug
 	    AskAndReplace("([:print:][\u0300-\u036F])","$1")
-End Sub
-
-Sub validate
-	MsgBox TEST WORKS
 End Sub
 
 Sub executeCitationCorrection
