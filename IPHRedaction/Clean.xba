@@ -41,6 +41,23 @@ Private Sub loadArticleStyles
     ThisComponent.StyleFamilies.loadStylesFromURL( filePath, aArgs() )
 End Sub
 
+Private Sub CreateCharacterStyle(sStyleName$, oProps())
+	Dim i%
+	Dim oFamilies
+	Dim oStyle
+	Dim oStyles
+	oFamilies = ThisComponent.StyleFamilies
+	oStyles = oFamilies.getByName(&quot;CharacterStyles&quot;)
+	If oStyles.HasByName(sStyleName) Then
+	  Exit Sub
+	End If
+	oStyle = ThisComponent.createInstance(&quot;com.sun.star.style.CharacterStyle&quot;)
+	For i=LBound(oProps) To UBound(oProps)
+	  oStyle.setPropertyValue(oProps(i).Name, oProps(i).Value)
+	Next
+	oStyles.insertByName(sStyleName, oStyle)
+End Sub
+
 Private Function CreateProperty( Optional cName As String, Optional uValue ) As com.sun.star.beans.PropertyValue
 	Dim oPropertyValue As New com.sun.star.beans.PropertyValue
 	If Not IsMissing( cName ) Then
