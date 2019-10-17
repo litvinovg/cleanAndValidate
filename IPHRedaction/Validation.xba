@@ -1,22 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markYX
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markZ
 
 End Sub
+
+Private Function isInDoc(searchString As String)
+	Dim founds As Object
+	Dim sDesc As Object
+	Dim srch(0) as new com.sun.star.beans.PropertyValue
+	sDesc = Thiscomponent.createSearchDescriptor()
+	sDesc.SearchAll = true
+	sDesc.ValueSearch = false
+	sDesc.SearchStyles = false 
+	sDesc.SearchRegularExpression = true
+	sDesc.SearchString = searchString 
+	founds = Thiscomponent.findAll(sDesc)
+	If founds.count &lt;&gt; 0 Then
+		isInDoc = true
+	Else
+		isInDoc = false
+	EndIf
+End Function
 
 Sub validateButton
-	removeBadCharacters
+	Dim footnotesReport As String
+	Dim graphicsReport As String
+	Dim badText As Boolean
+	Dim badNumberings As Boolean
+	Dim badFootnoteSigns As Boolean
+	Dim badGraphics As Boolean
+	badGraphics = false
+	badText = false
+	badFootnoteSigns = false
+	badNumberings = false
+	footnotesReport = checkAllFootnotes
+	graphicsReport = checkGraphics
+	If footnotesReport &lt;&gt; &quot;&quot; Then
+		badFootnoteSigns = true
+	EndIf
+	If graphicsReport &lt;&gt; &quot;&quot; Then
+		badGraphics = true
+	EndIf
+	If isInDoc(&quot;[\uE000-\uF8FF]&quot;) Then
+		badText = true	
+	EndIf
+	If badFootnoteSigns Then
+		MsgBox footnotesReport
+	EndIf
+	If badGraphics Then
+		MsgBox graphicsReport
+	EndIf
+	If badText OR badNumberings OR badFootnoteSigns OR badGraphics Then
+		MsgBox &quot;Отошлите данную статью в отдел подготовки рукописей к изданию для получения дополнительной информации.&quot;		
+		If badText Then
+			MsgBox &quot;В тексте обнаружены неподходящие для публикции символы.&quot; &amp; chr(10) &amp; &quot; Далее будет представлен список отрывков текста с подобными символами.&quot;
+			removeBadCharacters
+		EndIf
+	Else
+		MsgBox &quot;Документ успешно прошел проверку. &quot; &amp; chr(10) &amp; &quot;Неподходящих для публикации символов найдено не было.&quot;
+	EndIf
 End Sub
+
+
+Sub testcheckGraphics
+	checkGraphics
+End Sub
+
+Private Function checkGraphics
+	Dim drawPages As Object
+	Dim count as Integer
+	Dim draw As Object
+	Dim result As String
+	Dim shapeType As String
+	Dim oleN As Long 
+	oleN = 0
+	Dim graphicN As Long
+	graphicN = 0
+	Dim formulaN As Long
+	formulaN = 0
+	Dim frameShapeN As Long
+	frameShapeN = 0
+	Dim drawingN As Long
+	drawingN = 0
+	drawPages = ThisComponent.DrawPage
+&apos;	Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
+&apos;	MRI ThisComponent
+	count = drawPages.getCount()
+	For i = 0 to count-1
+		draw = drawPages.getByIndex(i)
+		shapeType = draw.ShapeType
+		If InStr(shapeType,&quot;com.sun.star.drawing&quot;) = 1 Then
+			drawingN = drawingN + 1 
+		EndIf	
+	Next i
+	If drawingN &lt;&gt; 0 Then
+		result = &quot;В документе найдены рисунки (&quot; &amp; drawingN &amp; &quot;), неподходящие для публикации.&quot;
+	EndIf
+	checkGraphics = result
+End Function
 
 Private Sub removeBadCharacters
 	StartTracking
 	    AskAndReplace(&quot;[\uE000-\uF8FF]+&quot;,&quot;&quot;)
-	    checkAllFootnotes
+	    
 	StopTracking
 	showTrackedChanges
 End Sub
 
-Private Sub checkAllFootnotes()
+Private Function checkAllFootnotes()
 	Dim footnotes As Object
 	Dim count as Integer
 	Dim charNum as Long
@@ -34,16 +125,12 @@ Private Sub checkAllFootnotes()
 		For j = 1 to charNum
 		  char = Asc(Right(Left(label,j),1))
 		  If char &gt;= 57344 AND char &lt;= 63743 then
-		  	result = result &amp; &quot;Символ &quot;&amp; Chr(char) &amp;&quot; сноски &quot;&amp; i &amp;&quot; находится в диапазоне для частного использования&quot;&amp; chr(10)
-		  	&apos;Mri footnote
-		  	&apos;footNote.setLabel(Left(label,j-1) &amp; &quot;*&quot; &amp; Right(label,charNum-j))
+		  	result = result &amp; &quot;Символ &quot;&amp; Chr(char) &amp;&quot; сноски &quot;&amp; i &amp;&quot; не подходит для публикации&quot;&amp; chr(10)
 		  End If
 		Next j
 	Next i
-	If result &lt;&gt; &quot;&quot; then
-		MsgBox result
-	EndIf
-End Sub
+	checkAllFootnotes = result
+End Function
 
 Private Sub showTrackedChanges
 	dim document   as object
