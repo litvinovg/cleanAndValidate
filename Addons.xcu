@@ -6,6 +6,13 @@
 	<node oor:name="AddonUI">
 	 	<node oor:name="OfficeToolBar">
 		  <node oor:name="pro.litvinovg.IPHRedaction.panel" oor:op="replace">
+			<prop oor:name="Title" oor:type="xs:string" oor:localized="true">
+		        <value xml:lang="en-US">Redactor's panel</value>  
+		        <value xml:lang="ru-RU">Панель редактора</value>  
+		    </prop>
+			<prop oor:name="Docked" oor:op="fuse"><value>true</value></prop>
+			<prop oor:name="HideFromToolbarMenu" oor:op="fuse"><value>false</value></prop>
+			<prop oor:name="Locked" oor:op="fuse"><value>false</value></prop>
 			<node oor:name="ToolBarItems"> 
 				<node oor:name="buttonValidate" oor:op="replace">
 				  <prop oor:name="Context" oor:type="xs:string">

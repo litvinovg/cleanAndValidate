@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markZ
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markZZZ
 
 End Sub
 
@@ -51,7 +51,7 @@ Sub validateButton
 		MsgBox graphicsReport
 	EndIf
 	If badText OR badNumberings OR badFootnoteSigns OR badGraphics Then
-		MsgBox &quot;Отошлите данную статью в отдел подготовки рукописей к изданию для получения дополнительной информации.&quot;		
+		MsgBox &quot;Перед публикацией документа следует исправить все найденные замечания.&quot;		
 		If badText Then
 			MsgBox &quot;В тексте обнаружены неподходящие для публикции символы.&quot; &amp; chr(10) &amp; &quot; Далее будет представлен список отрывков текста с подобными символами.&quot;
 			removeBadCharacters
@@ -71,15 +71,11 @@ Private Function checkGraphics
 	Dim count as Integer
 	Dim draw As Object
 	Dim result As String
+	result = &quot;&quot;
 	Dim shapeType As String
-	Dim oleN As Long 
-	oleN = 0
-	Dim graphicN As Long
-	graphicN = 0
-	Dim formulaN As Long
-	formulaN = 0
-	Dim frameShapeN As Long
-	frameShapeN = 0
+	Dim embeededObject As Object
+	Dim badFrame As Long
+	badFrame = 0
 	Dim drawingN As Long
 	drawingN = 0
 	drawPages = ThisComponent.DrawPage
@@ -92,9 +88,20 @@ Private Function checkGraphics
 		If InStr(shapeType,&quot;com.sun.star.drawing&quot;) = 1 Then
 			drawingN = drawingN + 1 
 		EndIf	
+		If InStr(shapeType,&quot;FrameShape&quot;) = 1 Then
+			embeededObject = draw.getEmbeddedObject()
+			If Not embeededObject.supportsService(&quot;com.sun.star.formula.FormulaProperties&quot;) Then
+				badFrame = badFrame + 1 
+			Else
+				&apos;Formula
+			EndIf
+		EndIf	
 	Next i
 	If drawingN &lt;&gt; 0 Then
-		result = &quot;В документе найдены рисунки (&quot; &amp; drawingN &amp; &quot;), неподходящие для публикации.&quot;
+		result = result &amp;&quot;В документе найдены рисунки (&quot; &amp; drawingN &amp; &quot;), неподходящие для публикации.&quot; &amp; chr(10)
+	EndIf
+	If badFrame &lt;&gt; 0 Then
+		result = result &amp;&quot;В документе найдены встроенные объекты (&quot; &amp; badFrame &amp; &quot;), неподходящие для публикации.&quot; &amp; chr(10)
 	EndIf
 	checkGraphics = result
 End Function
