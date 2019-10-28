@@ -57,7 +57,7 @@ Sub validateButton
 			removeBadCharacters
 		EndIf
 	Else
-		MsgBox &quot;Документ успешно прошел проверку. &quot; &amp; chr(10) &amp; &quot;Неподходящих для публикации символов найдено не было.&quot;
+                MsgBox &quot;Документ успешно прошел проверку. &quot; &amp; chr(10) &amp; &quot;Все изображения и символы корректны.&quot;
 	EndIf
 End Sub
 

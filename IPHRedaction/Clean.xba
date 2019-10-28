@@ -12,7 +12,6 @@
 	doNotTrack
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
 	cleanFormatting
-	disposePageBreaks
 	disposeAllLinks
 	disposeAllBookmarks
 	fixTableWidth
