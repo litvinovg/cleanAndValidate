@@ -11,6 +11,8 @@
 	saveDocument
 	doNotTrack
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
+	
+	convertFontsToCharStyles
 	cleanFormatting
 	disposeAllLinks
 	disposeAllBookmarks
@@ -20,6 +22,32 @@
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
+End Sub
+
+
+&apos;Replaces manual formatting text with font into character style with assigned font
+Private Sub convertFontsToCharStyles
+	Dim oDoc
+	oDoc = Thiscomponent
+	Dim srch(0) as new com.sun.star.beans.PropertyValue
+	SDesc = Thiscomponent.createSearchDescriptor()
+	  SDesc.SearchAll = true
+	  SDesc.ValueSearch = false
+	  SDesc.SearchStyles = false 
+	  SDesc.SearchRegularExpression = false
+	  SDesc.SearchString = &quot;&quot; 
+	  srch(0).Name = &quot;CharFontName&quot;
+	  SDesc.SetSearchAttributes(srch())
+	  founds = Thiscomponent.findFirst(SDesc)
+	  do while not isNull(founds)
+	    curFont = founds.CharFontName
+        If Not DocHasCharStyle(oDoc,curFont) Then
+	        oProps() = Array(CreateProperty(&quot;CharFontName&quot;, curFont))
+			CreateCharacterStyle(curFont, oProps())
+		End If
+	    founds.CharStyleNames = Array(curFont)
+	    founds = Thiscomponent.findNext(founds.getend, SDesc)
+	  loop
 End Sub
 
 Private Sub fixFrequentMistakes
