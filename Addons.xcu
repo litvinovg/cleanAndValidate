@@ -1,15 +1,13 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
-<oor:component-data xmlns:oor="http://openoffice.org/2001/registry"
-                    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                    oor:name="Addons"
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Addons"
                     oor:package="org.openoffice.Office">
 	<node oor:name="AddonUI">
 	 	<node oor:name="OfficeToolBar">
 		  <node oor:name="pro.litvinovg.IPHRedaction.panel" oor:op="replace">
-			<prop oor:name="Title" oor:type="xs:string" oor:localized="true">
-		        <value xml:lang="en-US">Redactor's panel</value>  
-		        <value xml:lang="ru-RU">Панель редактора</value>  
-		    </prop>
+			<prop oor:name="Title" oor:type="xs:string">
+				  <value xml:lang="en-US">Redactor's panel</value>
+				  <value xml:lang="ru-RU">Панель редактора</value>
+			</prop>
 			<prop oor:name="Docked" oor:op="fuse"><value>true</value></prop>
 			<prop oor:name="HideFromToolbarMenu" oor:op="fuse"><value>false</value></prop>
 			<prop oor:name="Locked" oor:op="fuse"><value>false</value></prop>
