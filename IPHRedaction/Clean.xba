@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Private Sub markFxFxF
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub markXXFXK
+
 End Sub
 
 Sub cleanButton
@@ -14,7 +15,7 @@ Sub cleanButton
 	saveDocument
 	doNotTrack
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
-	
+    unicodeSymbolsConversion	
 	convertFontsToCharStyles
 	cleanFormatting
 	disposeAllLinks
@@ -25,6 +26,54 @@ Sub cleanButton
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
+End Sub
+
+Private Sub unicodeSymbolsConversion
+	Dim newFontName As String
+	newFontName = &quot;IPH Astra Serif&quot;
+	Dim RAtts(2) as new com.sun.star.beans.PropertyValue
+	RAtts(0).Name = &quot;CharFontName&quot;
+	RAtts(1).Name = &quot;CharFontNameComplex&quot;
+	RAtts(2).Name = &quot;CharFontNameAsian&quot;
+
+	&apos;Basic Astra
+	RAtts(0).Value = newFontName
+	RAtts(1).Value = newFontName
+	RAtts(2).Value = newFontName
+	&apos;Cyrillic unicode block range \u0400-\u04FF
+	&apos;Basic Latin \u0020-\u007E
+	&apos;Combining diacritical marks 0301 0304 0323 032e 0331 035f
+	&apos;General Punctuation \u2000-\u206f
+	unicodeConversionEverywhere(&quot;[\u0400-\u04FF,\u0020-\u007E,\u2000-\u206f,\u0301,\u0304,\u0323,\u032e,\u0331,\u035f]+&quot;,RAtts)
+	
+	&apos;Arabic Scheherazade
+	newFontName = &quot;Scheherazade&quot;
+	RAtts(0).Value = newFontName
+	RAtts(1).Value = newFontName
+	RAtts(2).Value = newFontName
+	unicodeConversionEverywhere(&quot;[\u0600-\u06FF]+&quot;,RAtts)
+
+	&apos;Greek Tinos
+	newFontName = &quot;Tinos&quot;
+	RAtts(0).Value = newFontName
+	RAtts(1).Value = newFontName
+	RAtts(2).Value = newFontName
+	&apos;Greek and Coptic
+	unicodeConversionEverywhere(&quot;[\u0370-\u03FF]+&quot;,RAtts)
+	&apos;DejaVu Sans Mathematical operators
+	newFontName = &quot;DejaVu Sans&quot;
+	RAtts(0).Value = newFontName
+	RAtts(1).Value = newFontName
+	RAtts(2).Value = newFontName
+	&apos;\u2200-\u22FF Mathematical operators
+	unicodeConversionEverywhere(&quot;[\u2200-\u22FF]+&quot;,RAtts)
+	
+End Sub
+
+Private Sub unicodeConversionEverywhere(searchPattern,rAtts)
+	&apos;in text
+	setAttributesBySearchPattern(searchPattern,RAtts)
+
 End Sub
 
 
@@ -199,7 +248,7 @@ Private Sub disposeAllLinks()
 	ReplAttributes(1).Value = &quot;&quot;
 	ReplAttributes(2).Name = &quot;CharStyleName&quot;
 	ReplAttributes(2).Value = ThisComponent.getStyleFamilies().getByIndex(0).ElementNames(0)
-	setAttributesBySearchPattern(&quot;&quot;,SrchAttributes,ReplAttributes)
+	setAttributesBySearchPattern(&quot;&quot;,ReplAttributes,SrchAttributes)
 End Sub
 
 Private Sub disposeAllBookmarks()
@@ -236,42 +285,42 @@ Private Sub disposePageBreaks
 	Wend
 End Sub
 
-Private Sub setAttributesBySearchPattern(searchPattern As String, SrchAttributes, ReplAttributes)
-	
+Sub setAttributesBySearchPattern(searchPattern As String,ReplAttributes, Optional SrchAttributes)
+	turnOffTracking
+	dim stringValue1 As String
+	dim stringValue2 As String
 	Dim oSearch
 	Dim oTextCursor As Object 
 	Dim oViewCursor As Object
 	Dim lineIndent
-	dim stringValue1 As String
-	dim stringValue2 As String
-	Dim foundPatterns() As Object
-	document   = ThisComponent.CurrentController.Frame
+	Dim replace As Boolean
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 	oSearch = ThisComponent.createSearchDescriptor()
 	oSearch.SearchString = searchPattern
 	oSearch.SearchRegularExpression=True
     oSearch.SearchAll = True
-    oSearch.searchStyles = true
-    If Not IsEmpty(SrchAttributes(0).Value) Then
-      oSearch.SetSearchAttributes(SrchAttributes())
-    End If
+    If Not IsMissing (SrchAttributes) Then 
+	    If Not IsEmpty(SrchAttributes(0).Value) Then
+			oSearch.searchStyles = true
+			oSearch.SetSearchAttributes(SrchAttributes())
+	    End If
+    EndIf
 	oFound = ThisComponent.findFirst(oSearch)
-	Dim replace As Boolean
-
 	Do While Not IsNull(oFound)
-		replace = true
-		
-		For j = LBound(SrchAttributes) To Ubound(SrchAttributes)
-			If oFound.getPropertySetInfo.hasPropertyByName(SrchAttributes(j).Name) Then
-				stringValue1 = &quot;&quot; &amp; oFound.getPropertyValue(SrchAttributes(j).Name)
-				stringValue2 = &quot;&quot; &amp;  SrchAttributes(j).Value
-				If stringValue1 &lt;&gt; stringValue2 Then
+	 replace = true
+		If Not IsMissing(SrchAttributes) Then
+			For j = LBound(SrchAttributes) To Ubound(SrchAttributes)
+				If oFound.getPropertySetInfo.hasPropertyByName(SrchAttributes(j).Name) Then
+					stringValue1 = &quot;&quot; &amp; oFound.getPropertyValue(SrchAttributes(j).Name)
+					stringValue2 = &quot;&quot; &amp;  SrchAttributes(j).Value
+					If stringValue1 &lt;&gt; stringValue2 Then
+						replace = replace AND False
+					EndIf
+				Else
 					replace = replace AND False
 				EndIf
-			Else
-				replace = replace AND False
-			EndIf
-		Next j
+			Next j
+		EndIf
 		If replace then
 			For i = LBound(ReplAttributes) To Ubound(ReplAttributes)
 		  		If oFound.getPropertySetInfo.hasPropertyByName(ReplAttributes(i).Name) Then

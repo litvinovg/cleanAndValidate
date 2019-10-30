@@ -3,7 +3,7 @@
              xmlns:dep="http://openoffice.org/extensions/description/2006"
              xmlns:xlink="http://www.w3.org/1999/xlink">
   <identifier value="pro.litvinovg.Redaction" />
-  <version value="0.2.4" />
+  <version value="0.2.5" />
   <platform value="all" />
   <display-name>
     <name lang="en">Redaction for publishing in Institute of philosophy</name>
