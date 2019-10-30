@@ -286,7 +286,7 @@ Private Sub disposePageBreaks
 End Sub
 
 Sub setAttributesBySearchPattern(searchPattern As String,ReplAttributes, Optional SrchAttributes)
-	turnOffTracking
+	doNotTrack
 	dim stringValue1 As String
 	dim stringValue2 As String
 	Dim oSearch
