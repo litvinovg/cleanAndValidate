@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub markXXFXK
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub markXXFXKY
 
 End Sub
 
@@ -23,6 +23,7 @@ Sub cleanButton
 	fixTableWidth
 	fixDrawingAnchors
 	fixFrequentMistakes
+	removeUserPageStyles
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
@@ -100,6 +101,23 @@ Private Sub convertFontsToCharStyles
 	    founds.CharStyleNames = Array(curFont)
 	    founds = Thiscomponent.findNext(founds.getend, SDesc)
 	  loop
+End Sub
+
+Private Sub removeUserPageStyles
+	Dim oStyles As Object
+	Dim oStyle As Object
+    oStyles =  ThisComponent.StyleFamilies.getByName(&quot;PageStyles&quot;)
+    Dim count As Long
+    count = oStyles.count - 1
+    For i = 0  to count
+    	oStyle = oStyles.getByIndex(i)
+    	If oStyle.isUserDefined Then
+			oStyles.removeByName(oStyle.getName)
+			count = oStyles.count - 1
+			&apos;restart if style removed as sorting is unreliable
+			i = -1
+    	EndIf
+    Next i
 End Sub
 
 Private Sub fixFrequentMistakes
