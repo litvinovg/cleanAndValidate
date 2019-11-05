@@ -23,10 +23,24 @@ Sub cleanButton
 	fixTableWidth
 	fixDrawingAnchors
 	fixFrequentMistakes
+	removeFirstElementPageBreak
 	removeUserPageStyles
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
+End Sub
+
+Private Sub removeFirstElementPageBreak
+	enum1 = ThisComponent.Text.createEnumeration
+	If enum1.hasMoreElements Then
+		enum1Element = enum1.nextElement
+		If enum1Element.supportsService(&quot;com.sun.star.text.Paragraph&quot;) OR enum1Element.supportsService(&quot;com.sun.star.text.TextTable&quot;) Then
+			If enum1Element.BreakType &lt;&gt; com.sun.star.style.BreakType.NONE Then
+				enum1Element.PageDescName = &quot;&quot;
+				enum1Element.BreakType = com.sun.star.style.BreakType.NONE
+			EndIf
+		EndIf
+	EndIf 
 End Sub
 
 Private Sub unicodeSymbolsConversion
