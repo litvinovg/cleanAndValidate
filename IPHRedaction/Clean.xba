@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub markXXFXKY
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub markFDSID
 
 End Sub
 
@@ -108,11 +108,13 @@ Private Sub convertFontsToCharStyles
 	  founds = Thiscomponent.findFirst(SDesc)
 	  do while not isNull(founds)
 	    curFont = founds.CharFontName
-        If Not DocHasCharStyle(oDoc,curFont) Then
-	        oProps() = Array(CreateProperty(&quot;CharFontName&quot;, curFont))
-			CreateCharacterStyle(curFont, oProps())
-		End If
-	    founds.CharStyleNames = Array(curFont)
+	    If curFont &lt;&gt; &quot;IPH Astra Serif&quot; AND curFont &lt;&gt; &quot;&quot; Then
+	        If Not DocHasCharStyle(oDoc,curFont) Then
+		        oProps() = Array(CreateProperty(&quot;CharFontName&quot;, curFont))
+				CreateCharacterStyle(curFont, oProps())
+			End If
+		    founds.CharStyleNames = Array(curFont)
+	    EndIf
 	    founds = Thiscomponent.findNext(founds.getend, SDesc)
 	  loop
 End Sub
