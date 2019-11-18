@@ -17,7 +17,9 @@ Sub cleanButton
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
     unicodeSymbolsConversion	
 	convertFontsToCharStyles
+        saveAndreload()
 	cleanFormatting
+        saveAndreload()
 	disposeAllLinks
 	disposeAllBookmarks
 	fixTableWidth
