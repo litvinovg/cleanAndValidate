@@ -110,6 +110,9 @@ Private Sub convertFontsToCharStyles
 	  founds = Thiscomponent.findFirst(SDesc)
 	  do while not isNull(founds)
 	    curFont = founds.CharFontName
+        If IsEmpty(curFont) Then
+            curFont = &quot;IPH Astra Serif&quot;
+        EndIf
 	    If curFont &lt;&gt; &quot;IPH Astra Serif&quot; AND curFont &lt;&gt; &quot;&quot; Then
 	        If Not DocHasCharStyle(oDoc,curFont) Then
 		        oProps() = Array(CreateProperty(&quot;CharFontName&quot;, curFont))
