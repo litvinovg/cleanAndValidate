@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub markFDSID
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark2
 
 End Sub
 
@@ -16,10 +16,8 @@ Sub cleanButton
 	doNotTrack
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
     unicodeSymbolsConversion	
-	convertFontsToCharStyles
-        saveAndreload()
+	
 	cleanFormatting
-        saveAndreload()
 	removeHyperlinks
 	disposeAllBookmarks
 	fixTableWidth
@@ -447,7 +445,7 @@ Private Sub cleanFormatting
 	
 	convertFormattingToText
 	
-	manualFontsToCharStyle
+	convertFontsToCharStyles
 	
 	removeDirectFormatting
 	
@@ -488,32 +486,6 @@ Private Sub fixDrawingAnchors()
 			drawing.AnchorType = com.sun.star.text.TextContentAnchorType.AT_PARAGRAPH
 		EndIf
 	Next
-End Sub
-
-Sub manualFontsToCharStyle
-	Dim oDoc
-	oDoc = Thiscomponent
-	Dim srch(0) as new com.sun.star.beans.PropertyValue
-	SDesc = Thiscomponent.createSearchDescriptor()
-	  SDesc.SearchAll = true
-	  SDesc.ValueSearch = false
-	  SDesc.SearchStyles = false 
-	  SDesc.SearchRegularExpression = false
-	  SDesc.SearchString = &quot;&quot; 
-	  srch(0).Name = &quot;CharFontName&quot;
-	  SDesc.SetSearchAttributes(srch())
-	  founds = Thiscomponent.findFirst(SDesc)
-	  do while not isNull(founds)
-	    curFont = founds.CharFontName
-	    If curFont &lt;&gt; &quot;IPH Astra Serif&quot; AND curFont &lt;&gt; &quot;&quot; Then
-	      If Not DocHasCharStyle(oDoc,curFont) Then
-	        oProps() = Array(CreateProperty(&quot;CharFontName&quot;, curFont))
-	        CreateCharacterStyle(curFont, oProps())
-	      End If
-	      founds.CharStyleNames = Array(curFont)
-	    End If
-	    founds = Thiscomponent.findNext(founds.getend, SDesc)
-	  loop
 End Sub
 
 Private Sub replaceBaseWithStandard
