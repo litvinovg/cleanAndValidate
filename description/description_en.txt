@@ -1,0 +1,3 @@
+Extenstion intended for clean and validate documents intended for publishing in HTML and EPUB with pagingation.
+Cleaning button removes hiddent formatting, fixes frequent mistakes, converts known bad characters to good characters, and configures tables and images to correct settings.
+Validation button checks if document content matches specifications for export in HTML and EPUB with pagination.
