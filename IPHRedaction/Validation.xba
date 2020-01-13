@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markZZZX
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markZXZ
 
 End Sub
 
@@ -92,11 +92,16 @@ Private Function checkGraphics
 &apos;		  		Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
 &apos;			MRI draw
 			If draw.supportsService(&quot;com.sun.star.text.TextEmbeddedObject&quot;) Then
+
 				embeededObject = draw.getEmbeddedObject()
-				If Not embeededObject.supportsService(&quot;com.sun.star.formula.FormulaProperties&quot;) Then
+				If IsNull(embeededObject) Then
 					badFrame = badFrame + 1 
 				Else
-					&apos;Formula
+					If Not embeededObject.supportsService(&quot;com.sun.star.formula.FormulaProperties&quot;) Then
+						badFrame = badFrame + 1 
+					Else
+						&apos;Formula
+					EndIf	
 				EndIf
 			EndIf
 		EndIf	
