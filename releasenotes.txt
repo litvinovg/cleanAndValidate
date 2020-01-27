@@ -1,3 +1,4 @@
+0.3.7 Added greek extended conversion to Tinos, extended latin and letter-like symbols to base font
 0.3.6 Added check for null EmbeededObject (13.01.2019)
 0.0.1 (18.10.2019)
   initial release

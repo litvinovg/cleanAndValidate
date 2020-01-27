@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark3
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark4
 
 End Sub
 
@@ -55,12 +55,13 @@ Private Sub unicodeSymbolsConversion
 	RAtts(0).Value = newFontName
 	RAtts(1).Value = newFontName
 	RAtts(2).Value = newFontName
+	&apos;Letterlike Symbols 2100—214F
+	&apos;Extended latin-1 0080—00FF
 	&apos;Cyrillic unicode block range \u0400-\u04FF
 	&apos;Basic Latin \u0020-\u007E
 	&apos;Combining diacritical marks 0301 0304 0323 032e 0331 035f
 	&apos;General Punctuation \u2000-\u206f
-	unicodeConversionEverywhere(&quot;[\u0400-\u04FF,\u0020-\u007E,\u2000-\u206f,\u0301,\u0304,\u0323,\u032e,\u0331,\u035f]+&quot;,RAtts)
-	
+	unicodeConversionEverywhere(&quot;[\u2100-\u214F,\u0080-\u00FF,\u0400-\u04FF,\u0020-\u007E,\u2000-\u206f,\u0301,\u0304,\u0323,\u032e,\u0331,\u035f]+&quot;,RAtts)
 	&apos;Arabic Scheherazade
 	newFontName = &quot;Scheherazade&quot;
 	RAtts(0).Value = newFontName
@@ -75,6 +76,8 @@ Private Sub unicodeSymbolsConversion
 	RAtts(2).Value = newFontName
 	&apos;Greek and Coptic
 	unicodeConversionEverywhere(&quot;[\u0370-\u03FF]+&quot;,RAtts)
+	&apos;Greek extended
+	unicodeConversionEverywhere(&quot;[\u1F00-\u1FFF]+&quot;,RAtts)
 	&apos;DejaVu Sans Mathematical operators
 	newFontName = &quot;DejaVu Sans&quot;
 	RAtts(0).Value = newFontName
