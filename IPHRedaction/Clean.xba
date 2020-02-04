@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark7
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark8
 
 End Sub
 
@@ -13,18 +13,29 @@ Sub cleanButton
 		Exit Sub
 	EndIf
 	saveDocument
+	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,100)
 	doNotTrack
-	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,30)
+	statusIndicator.SetText(&quot;Заменяем шрифты в стилях&quot;)
 	replaceStyleFonts
-    unicodeSymbolsConversion	
+	statusIndicator.SetText(&quot;Конвертируем символы в целевые шрифты&quot;)
+    unicodeSymbolsConversion
+   	statusIndicator.SetText(&quot;Чистим ручное форматирование&quot;)	
 	cleanFormatting
+   	statusIndicator.SetText(&quot;Удаленем гиперссылки&quot;)	
 	removeHyperlinks
+	statusIndicator.SetText(&quot;Удаляем закладки&quot;)	
 	disposeAllBookmarks
+	statusIndicator.SetText(&quot;Настраиваем таблицы&quot;)	
 	fixTableWidth
+	statusIndicator.SetText(&quot;Настраиваем привязку изображений&quot;)	
 	fixDrawingAnchors
+	statusIndicator.SetText(&quot;Исправляем часто встречающиеся ошибки&quot;)	
 	fixFrequentMistakes
+	statusIndicator.SetText(&quot;Удаляем разрыв страницы, если он задан в начале документа&quot;)	
 	removeFirstElementPageBreak
+	statusIndicator.SetText(&quot;Удаляем пользовательские стили страниц&quot;)	
 	removeUserPageStyles
+	statusIndicator.SetText(&quot;Загружаем стили из шаблона&quot;)	
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
@@ -456,10 +467,8 @@ Sub setAttributesBySearchPattern(searchPattern As String,ReplAttributes, Optiona
 		EndIf
 		If replace then
 			For i = LBound(ReplAttributes) To Ubound(ReplAttributes)
-				attrName = ReplAttributes(i).Name
-				attrValue = ReplAttributes(i).Value
-		  		If oFound.getPropertySetInfo.hasPropertyByName(attrName) Then
-					oFound.SetPropertyValue(attrName,attrValue)
+		  		If oFound.getPropertySetInfo.hasPropertyByName(ReplAttributes(i).Name) Then
+					oFound.SetPropertyValue(ReplAttributes(i).Name, ReplAttributes(i).Value)
 				EndIf
 			Next i
 		EndIf	  
@@ -626,8 +635,7 @@ Private Sub removeDirectFormatting
 	document   = ThisComponent.CurrentController.Frame
 	Dim oViewCursor As Object &apos;View cursor
 	oViewCursor = ThisComponent.CurrentController.getViewCursor()
- &apos;	Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
-&apos;	Mri oViewCursor
+
 	oViewCursor.jumpToFirstPage()
 	oViewCursor.gotoStart(false)
 	oViewCursor.gotoEnd(true)
@@ -984,7 +992,7 @@ Private Sub convertWLLatin2IPHAstra
 	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	oSearchString = &quot;(.)\u0331&quot;
 	&apos;from unicode to remove direct formatting
-	searchAndRemoveDirectFormatting(oSearchString)
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	
 	&apos;Replace dot below
 	oSearchString = &quot;(.)\uF0D6&quot;
@@ -993,7 +1001,7 @@ Private Sub convertWLLatin2IPHAstra
 	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	&apos;from unicode to remove direct formatting
 	oSearchString = &quot;(.)\u0323&quot;
-	searchAndRemoveDirectFormatting(oSearchString)
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 
 	&apos;replace macron
 	oSearchString = &quot;(.)\uF0F4&quot;
@@ -1002,7 +1010,7 @@ Private Sub convertWLLatin2IPHAstra
 	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	&apos;from unicode to remove direct formatting
 	oSearchString = &quot;(.)\u0304&quot;
-	searchAndRemoveDirectFormatting(oSearchString)
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	
 	&apos;replace accent
 	oSearchString = &quot;(.)\uF0F1&quot;
@@ -1010,7 +1018,7 @@ Private Sub convertWLLatin2IPHAstra
 	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	&apos;from unicode to remove direct formatting
 	oSearchString = &quot;(.)\u0341&quot;
-	searchAndRemoveDirectFormatting(oSearchString)
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
 	
 	replaceFontsInStyles( &quot;WL LatinAllIn1Goth&quot;, newFontName)
 End Sub
