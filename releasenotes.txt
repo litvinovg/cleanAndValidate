@@ -1,3 +1,4 @@
+0.4.2 Fixed subscript/superscript conversion
 0.4.1 Improved conversion for diacritic marks
 0.4.0 Added fonts in styles conversion, also added conversion for WL Latin symbols
 0.3.7 Added greek extended conversion to Tinos, extended latin and letter-like symbols to base font
