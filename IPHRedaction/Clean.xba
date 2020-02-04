@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark9
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark10
 
 End Sub
 
@@ -39,6 +39,7 @@ Sub cleanButton
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
+	MsgBox &quot;Чистка завершена.&quot;		
 End Sub
 
 Private Sub removeFirstElementPageBreak
