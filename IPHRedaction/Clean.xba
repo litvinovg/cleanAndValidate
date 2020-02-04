@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark10
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark11
 
 End Sub
 
@@ -841,25 +841,25 @@ End Sub
 
 Private Sub toTextSuperscript
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
-	styleValues = Array(58,101)
+	styleValues = Array(58,14000)
 	convertFormatToEnclosure(CHR(871), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextSuperscript
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
-	styleValues = Array(58,101)
+	styleValues = Array(58,14000)
 	convertEnclosuresToFormat(CHR(871), styleNames, styleValues)
 End Sub
 
 Private Sub toTextSubscript
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
-	styleValues = Array(58,-101)
+	styleValues = Array(58,-14000)
 	convertFormatToEnclosure(CHR(872), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextSubscript
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
-	styleValues = Array(58,-101)
+	styleValues = Array(58,-14000)
 	convertEnclosuresToFormat(CHR(872), styleNames, styleValues)
 End Sub
 
@@ -1023,4 +1023,6 @@ Private Sub convertWLLatin2IPHAstra
 	
 	replaceFontsInStyles( &quot;WL LatinAllIn1Goth&quot;, newFontName)
 End Sub
+
+
 </script:module>
