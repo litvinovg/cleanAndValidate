@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark8
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark9
 
 End Sub
 
@@ -15,27 +15,27 @@ Sub cleanButton
 	saveDocument
 	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,100)
 	doNotTrack
-	statusIndicator.SetText(&quot;Заменяем шрифты в стилях&quot;)
+	statusIndicator.Start(&quot;Заменяем шрифты в стилях&quot;,100)
 	replaceStyleFonts
-	statusIndicator.SetText(&quot;Конвертируем символы в целевые шрифты&quot;)
+	statusIndicator.Start(&quot;Конвертируем символы в целевые шрифты&quot;,100)
     unicodeSymbolsConversion
-   	statusIndicator.SetText(&quot;Чистим ручное форматирование&quot;)	
+   	statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 	cleanFormatting
-   	statusIndicator.SetText(&quot;Удаленем гиперссылки&quot;)	
+   	statusIndicator.Start(&quot;Удаленем гиперссылки&quot;,100)	
 	removeHyperlinks
-	statusIndicator.SetText(&quot;Удаляем закладки&quot;)	
+	statusIndicator.Start(&quot;Удаляем закладки&quot;,100)	
 	disposeAllBookmarks
-	statusIndicator.SetText(&quot;Настраиваем таблицы&quot;)	
+	statusIndicator.Start(&quot;Настраиваем таблицы&quot;,100)	
 	fixTableWidth
-	statusIndicator.SetText(&quot;Настраиваем привязку изображений&quot;)	
+	statusIndicator.Start(&quot;Настраиваем привязку изображений&quot;,100)	
 	fixDrawingAnchors
-	statusIndicator.SetText(&quot;Исправляем часто встречающиеся ошибки&quot;)	
+	statusIndicator.Start(&quot;Исправляем часто встречающиеся ошибки&quot;,100)	
 	fixFrequentMistakes
-	statusIndicator.SetText(&quot;Удаляем разрыв страницы, если он задан в начале документа&quot;)	
+	statusIndicator.Start(&quot;Удаляем разрыв страницы, если он задан в начале документа&quot;,100)	
 	removeFirstElementPageBreak
-	statusIndicator.SetText(&quot;Удаляем пользовательские стили страниц&quot;)	
+	statusIndicator.Start(&quot;Удаляем пользовательские стили страниц&quot;,100)	
 	removeUserPageStyles
-	statusIndicator.SetText(&quot;Загружаем стили из шаблона&quot;)	
+	statusIndicator.Start(&quot;Загружаем стили из шаблона&quot;,100)	
 	loadArticleStyles
 	statusIndicator.end()
 	saveAndreload()
