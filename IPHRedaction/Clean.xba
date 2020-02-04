@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark11
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark12
 
 End Sub
 
@@ -863,6 +863,30 @@ Private Sub fromTextSubscript
 	convertEnclosuresToFormat(CHR(872), styleNames, styleValues)
 End Sub
 
+Private Sub toTextSuperscriptOld
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,101)
+	convertFormatToEnclosure(CHR(871), styleNames, styleValues)
+End Sub
+
+Private Sub fromTextSuperscriptOld
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,101)
+	convertEnclosuresToFormat(CHR(871), styleNames, styleValues)
+End Sub
+
+Private Sub toTextSubscriptOld
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,-101)
+	convertFormatToEnclosure(CHR(872), styleNames, styleValues)
+End Sub
+
+Private Sub fromTextSubscriptOld
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,-101)
+	convertEnclosuresToFormat(CHR(872), styleNames, styleValues)
+End Sub
+
 Private Sub toTextSparce
 	styleNames = Array(&quot;CharKerning&quot;)
 	For i=70 To 70 
@@ -881,19 +905,43 @@ End Sub
 
 
 Private Sub convertFormattingToText
+	Dim version As String
+	Dim smallNum As String
+	Dim bigNum As String
+	version = Trim(getVersion())
+	bigNum = Left(version, 1)
+	smallNum = Right(version, 1)
 	toTextBold
 	toTextItalic
 	toTextStrikeout
 	toTextUnderline
-	toTextSuperscript
-	toTextSubscript
+	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
+		toTextSuperscriptOld
+		toTextSubscriptOld
+	Else
+		toTextSuperscript
+		toTextSubscript
+	EndIf
+
 	toTextSparce
 End Sub
 
 Private Sub convertFormattingFromText
+	Dim version As String
+	version = Trim(getVersion())
+	Dim smallNum As String
+	Dim bigNum As String
+	version = Trim(getVersion())
+	bigNum = Left(version, 1)
+	smallNum = Right(version, 1)
 	fromTextSparce
-	fromTextSuperscript
-	fromTextSubscript
+	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
+		fromTextSuperscriptOld
+		fromTextSubscriptOld
+	Else
+		fromTextSuperscript
+		fromTextSubscript
+	EndIf
 	fromTextUnderline
 	fromTextStrikeout
 	fromTextItalic
@@ -1024,5 +1072,11 @@ Private Sub convertWLLatin2IPHAstra
 	replaceFontsInStyles( &quot;WL LatinAllIn1Goth&quot;, newFontName)
 End Sub
 
+Function getVersion
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)
+	Dim oProduct As Object
+	oProduct=GetRegistryKeyContent(&quot;org.openoffice.Setup/Product&quot;)
+	getVersion=oProduct.getByName(&quot;ooSetupVersion&quot;)
+End Function
 
 </script:module>
