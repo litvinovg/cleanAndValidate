@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark6
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark7
 
 End Sub
 
@@ -330,10 +330,10 @@ End Function
 
 
 Private Sub removeHyperlinks()
-	Dim statusIndicator as Object
+
 	Dim aNote As Object
-	statusIndicator = ThisComponent.getCurrentController.StatusIndicator
-	statusIndicator.Start(&quot;Удаление гиперссылок, подождите&quot;,10)
+
+
 	removeHLInText(ThisComponent.Text)
 	For x = 0 to ThisComponent.FootNotes.Count -1
 	  aNote = ThisComponent.FootNotes.getByIndex(x)
@@ -343,7 +343,7 @@ Private Sub removeHyperlinks()
 	  aNote = ThisComponent.EndNotes.getByIndex(x)
 	  removeHLInText(aNote.Text)
 	Next
-	statusIndicator.end()
+
 End Sub
 
 Private Sub removeHLInText(textElement)
@@ -967,34 +967,50 @@ End Sub
 
 Private Sub convertWLLatin2IPHAstra
 	Dim newFontName As String
-	newFontName = &quot;IPH Astra Serif&quot;
+	&apos;newFontName = &quot;IPH Astra Serif&quot;
 	Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
 	Dim ReplAttributes(0) as new com.sun.star.beans.PropertyValue
 	SrchAttributes(0).Name = &quot;CharFontName&quot;
-	SrchAttributes(0).Value = &quot;WL LatinAllIn1Goth&quot;
+	&apos;SrchAttributes(0).Value = &quot;WL LatinAllIn1Goth&quot;
 	ReplAttributes(0).Name = &quot;CharFontName&quot;
-	ReplAttributes(0).Value = newFontName
+	&apos;ReplAttributes(0).Value = newFontName
 	
-	SearchString = &quot;\uF0D4&quot;
-	oReplaceString = &quot;̱&quot;
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
+	SrchAttributes(0).Value = Empty
+	ReplAttributes(0).Value = Empty
+&apos;Replace macron below
+	oSearchString = &quot;(.)\uF0D4&quot;
+	oReplaceString = &quot;$1̱&quot;
+	&apos;from WL
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
+	oSearchString = &quot;(.)\u0331&quot;
+	&apos;from unicode to remove direct formatting
+	searchAndRemoveDirectFormatting(oSearchString)
 	
-	SearchString = &quot;\uF0D6&quot;
-	oReplaceString = &quot;̣&quot;
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
+	&apos;Replace dot below
+	oSearchString = &quot;(.)\uF0D6&quot;
+	oReplaceString = &quot;$1̣&quot;
+	&apos;from WL
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
+	&apos;from unicode to remove direct formatting
+	oSearchString = &quot;(.)\u0323&quot;
+	searchAndRemoveDirectFormatting(oSearchString)
+
+	&apos;replace macron
+	oSearchString = &quot;(.)\uF0F4&quot;
+	oReplaceString = &quot;$1̄&quot;
+	&apos;from WL
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
+	&apos;from unicode to remove direct formatting
+	oSearchString = &quot;(.)\u0304&quot;
+	searchAndRemoveDirectFormatting(oSearchString)
 	
-	SearchString = &quot;\uF0F4&quot;
-	oReplaceString = &quot;̄&quot;
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
-	
-	ReplAttributes(0).Value = newFontName
-	SearchString = &quot;\uF0F1&quot;
-	oReplaceString = &quot;́&quot;
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
-	ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, true)
+	&apos;replace accent
+	oSearchString = &quot;(.)\uF0F1&quot;
+	oReplaceString = &quot;$1́&quot;
+	ReplaceFormatting(oSearchString,oReplaceString,SrchAttributes,ReplAttributes, false)
+	&apos;from unicode to remove direct formatting
+	oSearchString = &quot;(.)\u0341&quot;
+	searchAndRemoveDirectFormatting(oSearchString)
 	
 	replaceFontsInStyles( &quot;WL LatinAllIn1Goth&quot;, newFontName)
 End Sub
