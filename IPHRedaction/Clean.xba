@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark12
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark13
 
 End Sub
 
@@ -117,14 +117,18 @@ Private Sub unicodeSymbolsConversion
 	&apos;Basic Latin \u0020-\u007E
 	&apos;Combining diacritical marks 0301 0304 0323 032e 0331 035f
 	&apos;General Punctuation \u2000-\u206f
+	&apos;Latin Extended A \u0100-\u017f
+    &apos;\u02bb Modifier Letter Turned Comma is in IPH Astra
 &apos;	unicodeConversionEverywhere(&quot;[\u0020-\u007F]+&quot;,RAtts)
-	unicodeConversionEverywhere(&quot;[\u2100-\u214F,\u0020-\u007F,\u0080-\u00FF,\u0400-\u04FF,\u2000-\u206f,\u0301,\u0304,\u0323,\u032e,\u0331,\u035f]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u2100-\u214f,\u0020-\u007f,\u0080-\u00ff,\u0400-\u04ff,\u2000-\u206f,\u0301,\u0304,\u0323,\u032e,\u0331,\u035f,\u02bb,\u0100-\u017f]+&quot;,RAtts)
 	&apos;Arabic Scheherazade
+    &apos;Arabic Presentation Forms-A fb50-fdff
+    &apos;Arabic Presentation Forms-B fe70-feff
 	newFontName = &quot;Scheherazade&quot;
 	RAtts(0).Value = newFontName
 	RAtts(1).Value = newFontName
 	RAtts(2).Value = newFontName
-	unicodeConversionEverywhere(&quot;[\u0600-\u06FF]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u0600-\u06ff,\ufb50-\ufdff,\ufe70-\ufeff]+&quot;,RAtts)
 
 	&apos;Greek Tinos
 	newFontName = &quot;Tinos&quot;
@@ -133,7 +137,7 @@ Private Sub unicodeSymbolsConversion
 	RAtts(2).Value = newFontName
 	&apos;Greek and Coptic 0370—03FF
 	&apos;Greek extended 1F00—1FFF
-	unicodeConversionEverywhere(&quot;[\u0370-\u03FF,\u1F00-\u1FFF]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u0370-\u03ff,\u1f00-\u1fff]+&quot;,RAtts)
 
 
 	&apos;DejaVu Sans Mathematical operators
@@ -142,7 +146,7 @@ Private Sub unicodeSymbolsConversion
 	RAtts(1).Value = newFontName
 	RAtts(2).Value = newFontName
 	&apos;\u2200-\u22FF Mathematical operators
-	unicodeConversionEverywhere(&quot;[\u2200-\u22FF]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u2200-\u22ff]+&quot;,RAtts)
 	
 End Sub
 
@@ -468,9 +472,9 @@ Sub setAttributesBySearchPattern(searchPattern As String,ReplAttributes, Optiona
 		EndIf
 		If replace then
 			For i = LBound(ReplAttributes) To Ubound(ReplAttributes)
-		  		If oFound.getPropertySetInfo.hasPropertyByName(ReplAttributes(i).Name) Then
+		  		&apos;If oFound.getPropertySetInfo.hasPropertyByName(ReplAttributes(i).Name) Then
 					oFound.SetPropertyValue(ReplAttributes(i).Name, ReplAttributes(i).Value)
-				EndIf
+				&apos;EndIf
 			Next i
 		EndIf	  
 		oFound = ThisComponent.findNext(oFound.End, oSearch)
