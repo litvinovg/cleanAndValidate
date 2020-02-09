@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark13
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark17
 
 End Sub
 
@@ -120,7 +120,7 @@ Private Sub unicodeSymbolsConversion
 	&apos;Latin Extended A \u0100-\u017f
     &apos;\u02bb Modifier Letter Turned Comma is in IPH Astra
 &apos;	unicodeConversionEverywhere(&quot;[\u0020-\u007F]+&quot;,RAtts)
-	unicodeConversionEverywhere(&quot;[\u2100-\u214f,\u0020-\u007f,\u0080-\u00ff,\u0400-\u04ff,\u2000-\u206f,\u0301,\u0304,\u0323,\u032e,\u0331,\u035f,\u02bb,\u0100-\u017f]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u2100-\u214f\u0020-\u007f\u0080-\u00ff\u0400-\u04ff\u2000-\u206f\u0301\u0304\u0323\u032e\u0331\u035f\u02bb\u0100-\u017f]+&quot;,RAtts)
 	&apos;Arabic Scheherazade
     &apos;Arabic Presentation Forms-A fb50-fdff
     &apos;Arabic Presentation Forms-B fe70-feff
@@ -128,7 +128,7 @@ Private Sub unicodeSymbolsConversion
 	RAtts(0).Value = newFontName
 	RAtts(1).Value = newFontName
 	RAtts(2).Value = newFontName
-	unicodeConversionEverywhere(&quot;[\u0600-\u06ff,\ufb50-\ufdff,\ufe70-\ufeff]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u0600-\u06ff\ufb50-\ufdff\ufe70-\ufeff]+&quot;,RAtts)
 
 	&apos;Greek Tinos
 	newFontName = &quot;Tinos&quot;
@@ -137,7 +137,7 @@ Private Sub unicodeSymbolsConversion
 	RAtts(2).Value = newFontName
 	&apos;Greek and Coptic 0370—03FF
 	&apos;Greek extended 1F00—1FFF
-	unicodeConversionEverywhere(&quot;[\u0370-\u03ff,\u1f00-\u1fff]+&quot;,RAtts)
+	unicodeConversionEverywhere(&quot;[\u0370-\u03ff\u1f00-\u1fff]+&quot;,RAtts)
 
 
 	&apos;DejaVu Sans Mathematical operators
