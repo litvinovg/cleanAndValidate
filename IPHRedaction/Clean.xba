@@ -21,7 +21,7 @@ Sub cleanButton
     unicodeSymbolsConversion
    	statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 	cleanFormatting
-   	statusIndicator.Start(&quot;Удаленем гиперссылки&quot;,100)	
+   	statusIndicator.Start(&quot;Удаляем гиперссылки&quot;,100)	
 	removeHyperlinks
 	statusIndicator.Start(&quot;Удаляем закладки&quot;,100)	
 	disposeAllBookmarks
