@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark18
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark20
 
 End Sub
 
@@ -261,6 +261,7 @@ Private Sub fixFrequentMistakes
 	AskAndReplace(&quot;(?&lt;=[:alpha:])&lt;(?=…&gt;)&quot;,space &amp; &quot;&lt;&quot;)
 	&apos;Между угловой закрывающейся скобкой и буквой должен быть пробел
 	AskAndReplace(&quot;(?&lt;=&lt;…)&gt;(?=[:alpha:])&quot;,&quot;&gt;&quot; &amp; space)
+	AskAndReplace(&quot;[ий][\u0306]+&quot;,&quot;й&quot;)
 End Sub
 
 Private Sub loadArticleStyles
