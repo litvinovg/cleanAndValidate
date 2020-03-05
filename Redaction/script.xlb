@@ -3,4 +3,5 @@
 <library:library xmlns:library="http://openoffice.org/2000/library" library:name="Redaction" library:readonly="false" library:passwordprotected="false">
  <library:element library:name="Validation"/>
  <library:element library:name="Clean"/>
+ <library:element library:name="Configuration"/>
 </library:library>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Configuration" script:language="StarBasic" script:moduleType="normal">Public Const redactionExtenstionName As String = &quot;cleanAndValidate&quot;
+
+Function initRedactionConfiguration()
+	On Error Goto exceptionHandler
+	Dim regFactory As Object
+	Dim reg As Object
+    Dim props(2) As New com.sun.star.beans.PropertyValue
+
+    regFactory = CreateUnoService(&quot;com.sun.star.ucb.Store&quot;)
+    reg = regFactory.createPropertySetRegistry(redactionExtenstionName)
+
+   	redactionProps = reg.openPropertySet(redactionExtenstionName, TRUE)
+   	redactionProps.addProperty(&quot;complexity&quot;, 128, &quot;user&quot;)
+	initConfigureation = redactionProps
+	exceptionHandler:
+	Resume Next
+	initRedactionConfiguration = redactionProps
+End Function
+
+Sub setRedactionComplexity(complexityLevel)
+	Dim config As Object
+	config = initRedactionConfiguration()
+	config.setPropertyValue(&quot;complexity&quot;, complexityLevel)
+End Sub
+</script:module>
