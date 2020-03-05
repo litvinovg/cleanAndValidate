@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="ConfigDialog" dlg:left="196" dlg:top="109" dlg:width="157" dlg:height="64" dlg:closeable="true" dlg:moveable="true">
+ <dlg:bulletinboard>
+  <dlg:checkbox dlg:id="CB_complexity" dlg:tab-index="0" dlg:left="5" dlg:top="13" dlg:width="150" dlg:height="19" dlg:value="Включить расширенное управление чисткой" dlg:checked="false"/>
+  <dlg:button dlg:id="OK" dlg:tab-index="1" dlg:left="9" dlg:top="45" dlg:width="59" dlg:height="13" dlg:value="Сохранить" dlg:button-type="ok"/>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="2" dlg:left="-132" dlg:top="41" dlg:width="2" dlg:height="0" dlg:value="CommandButton1"/>
+  <dlg:button dlg:id="CANCEL" dlg:tab-index="3" dlg:left="77" dlg:top="45" dlg:width="59" dlg:height="13" dlg:value="Отмена" dlg:button-type="cancel"/>
+ </dlg:bulletinboard>
+</dlg:window>

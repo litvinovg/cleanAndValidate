@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark23
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark24
 
 End Sub
 
@@ -13,6 +13,9 @@ Sub cleanButton
 		makerUpMenu()
 	EndIf
 		
+End Sub
+
+Sub makerUpMenu()
 End Sub
 
 Private Sub quietCleaning

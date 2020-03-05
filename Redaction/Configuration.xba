@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Configuration" script:language="StarBasic" script:moduleType="normal">Public Const redactionExtenstionName As String = &quot;cleanAndValidate&quot;
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Configuration" script:language="StarBasic" script:moduleType="normal">Public Const redactionExtensionName As String = &quot;cleanAndValidate&quot;
 
 Function initRedactionConfiguration()
 	On Error Goto exceptionHandler
@@ -9,9 +9,9 @@ Function initRedactionConfiguration()
     Dim props(2) As New com.sun.star.beans.PropertyValue
 
     regFactory = CreateUnoService(&quot;com.sun.star.ucb.Store&quot;)
-    reg = regFactory.createPropertySetRegistry(redactionExtenstionName)
+    reg = regFactory.createPropertySetRegistry(redactionExtensionName)
 
-   	redactionProps = reg.openPropertySet(redactionExtenstionName, TRUE)
+   	redactionProps = reg.openPropertySet(redactionExtensionName, TRUE)
    	redactionProps.addProperty(&quot;complexity&quot;, 128, &quot;user&quot;)
 	initConfigureation = redactionProps
 	exceptionHandler:
@@ -19,9 +19,43 @@ Function initRedactionConfiguration()
 	initRedactionConfiguration = redactionProps
 End Function
 
-Sub setRedactionComplexity(complexityLevel)
+Private Sub setConfigFromDialog(dialog)
 	Dim config As Object
 	config = initRedactionConfiguration()
-	config.setPropertyValue(&quot;complexity&quot;, complexityLevel)
+	If dialog.getControl(&quot;CB_complexity&quot;).state = 1 Then
+        config.setPropertyValue(&quot;complexity&quot;, &quot;makerUp&quot;)
+    Else
+		config.setPropertyValue(&quot;complexity&quot;, &quot;user&quot;)
+	EndIf
+End Sub
+
+Private Sub loadConfigToDialog(dialog)
+	Dim config As Object
+	config = initRedactionConfiguration()
+	If config.getPropertyValue(&quot;complexity&quot;) = &quot;makerUp&quot; Then
+        dialog.getControl(&quot;CB_complexity&quot;).state = 1
+    Else
+        dialog.getControl(&quot;CB_complexity&quot;).state = 0
+    EndIf
+
+End Sub
+
+Private Sub configurationDialog
+	Dim dialog As Object
+	DialogLibraries.LoadLibrary(&quot;Redaction&quot;)
+	dialog = CreateUnoDialog(DialogLibraries.Redaction.ConfigDialog)
+	loadConfigToDialog(dialog)
+	dialog.setVisible(true)
+	Select Case dialog.Execute()
+    Case 1
+        setConfigFromDialog(dialog)
+    Case 0
+    End Select
+
+    dialog.setVisible(false)
+    dialog.dispose()
+    Exit sub
+
+	
 End Sub
 </script:module>
