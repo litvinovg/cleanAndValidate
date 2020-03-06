@@ -1,3 +1,4 @@
+0.5.1 Added menu to control over cleaning process 
 0.4.8 Added conversion for И + \u0306 to Й  and еЕ + \u308 to ёЁ
 0.4.7 Added conversion for и + \u0306 to й
 0.4.3 Fixed bad regexps
