@@ -29,6 +29,7 @@ Sub validateButton
 	Dim badNumberings As Boolean
 	Dim badFootnoteSigns As Boolean
 	Dim badGraphics As Boolean
+	Dim needExtendedInfo As Boolean
 	badGraphics = false
 	badText = false
 	badFootnoteSigns = false
@@ -50,6 +51,15 @@ Sub validateButton
 	If badGraphics Then
 		MsgBox graphicsReport
 	EndIf
+	Dim config As Object
+ 	config = initRedactionConfiguration()
+	If config.getPropertyValue(&quot;complexity&quot;) = &quot;makerUp&quot; then
+		needExtendedInfo = true
+	Else
+		needExtendedInfo = false
+	EndIf
+		printNumberingSymbols(needExtendedInfo)
+	
 	If badText OR badNumberings OR badFootnoteSigns OR badGraphics Then
 		MsgBox &quot;Перед публикацией документа следует исправить все найденные замечания.&quot;		
 		If badText Then
@@ -147,6 +157,80 @@ Private Function checkAllFootnotes()
 	Next i
 	checkAllFootnotes = result
 End Function
+
+Private Sub printNumberingSymbols(needExtendedInfo)
+	Dim families As Object 
+	Dim numStyles As Object
+	Dim numStyle As Object
+	Dim numRules As Object
+	Dim numRule As Object
+	Dim prop As Object
+	Dim enum1 As Object
+	Dim enum1Element As Object
+	Dim fontProp As Object
+	Dim fontName As String
+	Dim result As String  
+	Dim resultBad As String
+    dim excerpt As String
+    dim exLength As Integer
+	families = ThisComponent.StyleFamilies
+	numStyles = families.getByName(&quot;NumberingStyles&quot;)
+	result = &quot;&quot;
+	resultBad = &quot;&quot;
+	enum1 = ThisComponent.Text.createEnumeration
+	Do While enum1.hasMoreElements
+		enum1Element = enum1.nextElement
+		If enum1Element.supportsService(&quot;com.sun.star.text.Paragraph&quot;) Then	  
+		  If NOT IsMissing(enum1Element.NumberingRules) AND NOT IsEmpty(enum1Element.NumberingRules) Then
+            numRules = enum1Element.NumberingRules
+		    If numRules.hasElements Then
+		  	  numRule = numRules.getByIndex(enum1Element.NumberingLevel)
+		  	  fontName = &quot;&quot;
+		  	  fontChar = &quot;&quot;
+		  	  For k = 0 To Ubound(numRule)
+			    prop = numRule(k)
+			    If prop.Name = &quot;BulletFont&quot; Then
+				  fontName = prop.Value.Name
+			    EndIf
+			    If prop.Name = &quot;BulletChar&quot; Then
+			      fontChar = prop.Value
+			    EndIf
+			  Next k
+			  exLength = 15
+			  excerpt = enum1Element.String
+			  If Len(excerpt) &lt; exLength Then
+			  	exLength = Len(excerpt)
+			  EndIf
+			  tmp = &quot;Уровень &quot; &amp; (j + 1) &amp; &quot; шрифт &quot; &amp; fontName &amp; &quot; символ &quot; &amp; fontChar &amp; &quot; (&quot; &amp; Hex(Asc(fontChar)) &amp; &quot;) &quot;&amp; Left(excerpt,exLength) &amp; chr(10) 
+			  If Asc(fontChar) &gt; 57344  AND Asc(fontChar) &lt; 63743 Then
+			  	resultBad = resultBad &amp; tmp
+			  ElseIf fontName &lt;&gt; &quot;IPH Astra Serif&quot; _
+			     AND fontName &lt;&gt; &quot;OpenSymbol&quot; _
+			     AND fontName &lt;&gt; &quot;IPH Lib Serif&quot; _
+			     AND fontName &lt;&gt; &quot;IPH Lib Sans&quot; _
+			     AND fontName &lt;&gt; &quot;Liberation Serif&quot; _
+			     AND fontName &lt;&gt; &quot;Liberation Sans&quot; _
+			     AND needExtendedInfo Then
+			  	result = result &amp; tmp
+			  EndIf
+		    EndIf
+		  EndIf
+		EndIf
+	Loop
+	dim report as String
+	report = &quot;&quot;
+	If result = &quot;&quot; AND resultBad = &quot;&quot; Then
+		Exit sub
+	Else  
+	    If resultBad &lt;&gt; &quot;&quot; Then
+	    	report = &quot;Маркером в следующих списках нумерации задан некорректный символ&quot;&amp; chr(10) &amp; resultBad
+	    EndIf
+	    If result &lt;&gt; &quot;&quot; Then
+			report = report &amp; &quot;В следующих списках нумерации найдены шрифты &quot;&amp; chr(10)&amp; result
+		EndIf
+	EndIf
+	MsgBox report	
+End Sub
 
 Private Sub showTrackedChanges
 	dim document   as object
