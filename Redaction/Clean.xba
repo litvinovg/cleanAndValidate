@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark27
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark28
 
 End Sub
 
@@ -82,6 +82,10 @@ Private Sub cleanAccordingTo(dialog)
 		statusIndicator.Start(&quot;Загружаем стили из шаблона&quot;,100)	
 		loadArticleStyles
 	EndIf
+	If dialog.getControl(&quot;removeManualPageBreaks&quot;).state = 1 Then
+		removeManualPageBreaks
+	EndIf
+	
 	statusIndicator.end()
 	saveAndreload()
 	MsgBox &quot;Чистка завершена.&quot;
@@ -499,7 +503,7 @@ Private Sub disposeAllBookmarks()
 End Sub
 
 
-Private Sub disposePageBreaks
+Private Sub removeManualPageBreaks
 	oTextCursor = ThisComponent.Text.CreateTextCursor()
 	enum1 = ThisComponent.Text.createEnumeration
 	While enum1.hasMoreElements
