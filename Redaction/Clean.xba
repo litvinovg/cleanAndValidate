@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark24
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark26
 
 End Sub
 
@@ -11,11 +11,78 @@ Sub cleanButton
 		quietCleaning()
 	Else
 		makerUpMenu()
-	EndIf
-		
+	EndIf	
 End Sub
 
-Sub makerUpMenu()
+Private Sub makerUpMenu
+	Dim dialog As Object
+	DialogLibraries.LoadLibrary(&quot;Redaction&quot;)
+	dialog = CreateUnoDialog(DialogLibraries.Redaction.CleaningDialog)
+	dialog.setVisible(true)
+	Select Case dialog.Execute()
+    Case 1
+        cleanAccordingTo(dialog)
+    Case 0
+    End Select
+    dialog.dispose()
+    Exit sub	
+End Sub
+
+Private Sub cleanAccordingTo(dialog)
+	Dim statusIndicator as Object
+	statusIndicator = ThisComponent.getCurrentController.statusIndicator
+	dialog.setVisible(false)
+	saveDocument
+	statusIndicator.Start(&quot;Чистка документа начата, подождите&quot;,100)
+	doNotTrack
+	If dialog.getControl(&quot;fontsInStyles&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Заменяем шрифты в стилях&quot;,100)
+		replaceStyleFonts
+	EndIf
+	If dialog.getControl(&quot;symbolsConversion&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Конвертируем символы в целевые шрифты&quot;,100)
+	    unicodeSymbolsConversion
+  	EndIf
+	If dialog.getControl(&quot;cleanFormatting&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
+		cleanFormatting
+	EndIf
+	If dialog.getControl(&quot;removeLinks&quot;).state = 1 Then
+ 		statusIndicator.Start(&quot;Удаляем гиперссылки&quot;,100)	
+		removeHyperlinks
+	EndIf
+	If dialog.getControl(&quot;removeBookmarks&quot;).state = 1 Then
+	statusIndicator.Start(&quot;Удаляем закладки&quot;,100)	
+	disposeAllBookmarks
+	EndIf
+	If dialog.getControl(&quot;configTables&quot;).state = 1 Then
+	statusIndicator.Start(&quot;Настраиваем таблицы&quot;,100)	
+	fixTableWidth
+	EndIf
+	If dialog.getControl(&quot;configAnchors&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Настраиваем привязку изображений&quot;,100)	
+		fixDrawingAnchors
+	EndIf
+	If dialog.getControl(&quot;fixMistakes&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Исправляем часто встречающиеся ошибки&quot;,100)	
+		fixFrequentMistakes
+	EndIf
+	If dialog.getControl(&quot;removeInitPageBreak&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Удаляем разрыв страницы, если он задан в начале документа&quot;,100)	
+		removeFirstElementPageBreak
+	EndIf
+	If dialog.getControl(&quot;removePageStyles&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Удаляем пользовательские стили страниц&quot;,100)	
+		removeUserPageStyles
+	EndIf
+	If dialog.getControl(&quot;loadStandardStyles&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Загружаем стили из шаблона&quot;,100)	
+		loadArticleStyles
+	EndIf
+	statusIndicator.end()
+	saveAndreload()
+	MsgBox &quot;Чистка завершена.&quot;
+	
 End Sub
 
 Private Sub quietCleaning

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="CleaningDialog" dlg:left="108" dlg:top="17" dlg:width="237" dlg:height="156" dlg:closeable="true" dlg:moveable="true">
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="Cancel" dlg:tab-index="0" dlg:left="65" dlg:top="139" dlg:width="40" dlg:height="12" dlg:value="Отмена" dlg:button-type="cancel"/>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="1" dlg:left="41" dlg:top="169" dlg:width="2" dlg:height="0" dlg:value="CommandButton1"/>
+  <dlg:button dlg:id="OK" dlg:tab-index="2" dlg:left="129" dlg:top="139" dlg:width="40" dlg:height="12" dlg:value="OK" dlg:button-type="ok"/>
+  <dlg:checkbox dlg:id="fontsInStyles" dlg:tab-index="3" dlg:left="10" dlg:top="9" dlg:width="218" dlg:height="7" dlg:value="Заменить названия шрифтов в стилях" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="removeLinks" dlg:tab-index="6" dlg:left="10" dlg:top="40" dlg:width="218" dlg:height="7" dlg:value="Удалить гиперссылки" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="cleanFormatting" dlg:tab-index="5" dlg:left="10" dlg:top="30" dlg:width="218" dlg:height="7" dlg:value="Очистить форматирование" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="removeBookmarks" dlg:tab-index="7" dlg:left="10" dlg:top="51" dlg:width="218" dlg:height="7" dlg:value="Удалить закладки" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="configTables" dlg:tab-index="8" dlg:left="10" dlg:top="61" dlg:width="218" dlg:height="7" dlg:value="Настроить свойства таблиц" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="configAnchors" dlg:tab-index="9" dlg:left="10" dlg:top="71" dlg:width="218" dlg:height="7" dlg:value="Настроить привязки изображений" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="fixMistakes" dlg:tab-index="10" dlg:left="10" dlg:top="81" dlg:width="218" dlg:height="7" dlg:value="Исправить часто встречающиеся ошибки набора" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="removeInitPageBreak" dlg:tab-index="11" dlg:left="10" dlg:top="92" dlg:width="218" dlg:height="7" dlg:value="Удалить разрыв страницы в начале документа" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="removePageStyles" dlg:tab-index="12" dlg:left="10" dlg:top="103" dlg:width="218" dlg:height="7" dlg:value="Удалить пользовательские стили страниц" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="loadStandardStyles" dlg:tab-index="13" dlg:left="10" dlg:top="114" dlg:width="218" dlg:height="7" dlg:value="Загрузить стили страниц из шаблона Статья.ott" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="symbolsConversion" dlg:tab-index="4" dlg:left="10" dlg:top="20" dlg:width="218" dlg:height="7" dlg:value="Произвести конвертацию символов" dlg:checked="false"/>
+ </dlg:bulletinboard>
+</dlg:window>
