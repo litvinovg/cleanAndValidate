@@ -16,5 +16,6 @@
   <dlg:checkbox dlg:id="removePageStyles" dlg:tab-index="12" dlg:left="10" dlg:top="103" dlg:width="218" dlg:height="7" dlg:value="Удалить пользовательские стили страниц" dlg:checked="false"/>
   <dlg:checkbox dlg:id="loadStandardStyles" dlg:tab-index="13" dlg:left="10" dlg:top="114" dlg:width="218" dlg:height="7" dlg:value="Загрузить стили страниц из шаблона Статья.ott" dlg:checked="false"/>
   <dlg:checkbox dlg:id="symbolsConversion" dlg:tab-index="4" dlg:left="10" dlg:top="20" dlg:width="218" dlg:height="7" dlg:value="Произвести конвертацию символов" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="removeUnusedStyles" dlg:tab-index="14" dlg:left="10" dlg:top="124" dlg:width="218" dlg:height="7" dlg:value="Удалить неиспользуемые стили" dlg:checked="false"/>
  </dlg:bulletinboard>
 </dlg:window>

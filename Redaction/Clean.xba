@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark26
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark27
 
 End Sub
 
@@ -47,17 +47,20 @@ Private Sub cleanAccordingTo(dialog)
 		statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 		cleanFormatting
 	EndIf
+	If dialog.getControl(&quot;removeUnusedStyles&quot;).state = 1 Then
+		removeUnusedStyles
+	EndIf
 	If dialog.getControl(&quot;removeLinks&quot;).state = 1 Then
  		statusIndicator.Start(&quot;Удаляем гиперссылки&quot;,100)	
 		removeHyperlinks
 	EndIf
 	If dialog.getControl(&quot;removeBookmarks&quot;).state = 1 Then
-	statusIndicator.Start(&quot;Удаляем закладки&quot;,100)	
-	disposeAllBookmarks
+		statusIndicator.Start(&quot;Удаляем закладки&quot;,100)	
+		disposeAllBookmarks
 	EndIf
 	If dialog.getControl(&quot;configTables&quot;).state = 1 Then
-	statusIndicator.Start(&quot;Настраиваем таблицы&quot;,100)	
-	fixTableWidth
+		statusIndicator.Start(&quot;Настраиваем таблицы&quot;,100)	
+		fixTableWidth
 	EndIf
 	If dialog.getControl(&quot;configAnchors&quot;).state = 1 Then
 		statusIndicator.Start(&quot;Настраиваем привязку изображений&quot;,100)	
@@ -102,6 +105,7 @@ Private Sub quietCleaning
     unicodeSymbolsConversion
    	statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 	cleanFormatting
+	removeUnusedStyles
    	statusIndicator.Start(&quot;Удаляем гиперссылки&quot;,100)	
 	removeHyperlinks
 	statusIndicator.Start(&quot;Удаляем закладки&quot;,100)	
@@ -611,7 +615,7 @@ Private Sub cleanFormatting
 	
 	resetFootnotesStyle
 	
-	removeUnusedStyles
+
 
 End Sub
 
