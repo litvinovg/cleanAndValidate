@@ -1,34 +1,6 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Addons" oor:package="org.openoffice.Office">
    <node oor:name="AddonUI">
-    <node oor:name="OfficeMenuBar">
-      <node oor:name="pro.litvinovg.epublishing.menu" oor:op="replace">
-        <prop oor:name="Context" oor:type="xs:string">
-          <value>com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
-        </prop>
-        <prop oor:name="Title" oor:type="xs:string">
-          <value xml:lang="en">ePublishing</value>
-        </prop>
-        <node oor:name="Submenu">
-          <node oor:name="cleanConfigure" oor:op="replace">
-            <prop oor:name="Context" oor:type="xs:string">
-              <value>com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
-            </prop>
-            <prop oor:name="Title" oor:type="xs:string">
-              <value xml:lang="en">Configure clean</value>
-              <value xml:lang="ru">Настройка чистки</value>
-            </prop>
-            <prop oor:name="URL" oor:type="xs:string">
-              <value>macro:///Redaction.Configuration.ConfigurationDialog</value>
-            </prop>
-            <prop oor:name="Target" oor:type="xs:string">
-              <value>_self</value>
-            </prop>
-          </node>
-        </node>
-      </node>
-    </node>
-
 	 	<node oor:name="OfficeToolBar">
 		  <node oor:name="pro.litvinovg.Redaction.panel" oor:op="replace">
 			<prop oor:name="Title" oor:type="xs:string">
