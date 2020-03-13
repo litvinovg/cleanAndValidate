@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark31
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark32
 
 End Sub
 
@@ -51,7 +51,10 @@ Private Sub cleanAccordingTo(dialog)
 		statusIndicator.Start(&quot;Очищаем стили сносок&quot;,100)	
 		resetFootnotesStyle
 	EndIf
-
+	If dialog.getControl(&quot;replaceWhiteBackground&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Заменяем белый фон на прозрачный&quot;,100)	
+		replaceWhiteBackgroundWithTransparent
+	EndIf
 	If dialog.getControl(&quot;removeUnusedStyles&quot;).state = 1 Then
 		removeUnusedStyles
 	EndIf
@@ -1124,6 +1127,30 @@ Private Function getStyleNames(oFamily,bLocalized as Boolean, _
 	xArray(iUB) = vNextElement
 End Sub
 
+Private Sub replaceWhiteBackgroundWithTransparent
+ 	Dim description As String
+ 	Dim searchPattern As String
+ 	searchPattern = &quot;&quot;
+ &apos;	description = &quot;Вы уверены, что хотите заменить белый фон на прозрачный в текущем документе?&quot;
+ &apos;	If NOT confirm(description) Then
+ &apos;		Exit Sub
+ &apos;	EndIf
+	Dim statusIndicator as Object
+	statusIndicator = ThisComponent.getCurrentController.statusIndicator
+	statusIndicator.Start(&quot;Замена белого фона на прозрачный начата&quot;,100)
+	Dim SrchAttributes(1) as new com.sun.star.beans.PropertyValue
+	Dim ReplAttributes(1) as new com.sun.star.beans.PropertyValue
+	SrchAttributes(0).Name = &quot;CharBackTransparent&quot;
+	SrchAttributes(0).Value = False
+	SrchAttributes(1).Name = &quot;CharBackColor&quot;
+	SrchAttributes(1).Value = 16777215
+	ReplAttributes(0).Name = &quot;CharBackTransparent&quot;
+	ReplAttributes(0).Value = True
+	ReplAttributes(1).Name = &quot;CharBackColor&quot;
+	ReplAttributes(1).Value = -1
+	setAttributesBySearchPattern(searchPattern,ReplAttributes,SrchAttributes)
+	statusIndicator.end()
+End Sub
 
 Private Sub convertWLLatin2IPHAstra
 	Dim newFontName As String
