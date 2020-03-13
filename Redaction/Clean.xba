@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark30
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark31
 
 End Sub
 
@@ -47,6 +47,11 @@ Private Sub cleanAccordingTo(dialog)
 		statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 		cleanFormatting
 	EndIf
+	If dialog.getControl(&quot;resetFootnotesStyle&quot;).state = 1 Then
+		statusIndicator.Start(&quot;Очищаем стили сносок&quot;,100)	
+		resetFootnotesStyle
+	EndIf
+
 	If dialog.getControl(&quot;removeUnusedStyles&quot;).state = 1 Then
 		removeUnusedStyles
 	EndIf
@@ -109,6 +114,7 @@ Private Sub quietCleaning
     unicodeSymbolsConversion
    	statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 	cleanFormatting
+	resetFootnotesStyle
 	removeUnusedStyles
    	statusIndicator.Start(&quot;Удаляем гиперссылки&quot;,100)	
 	removeHyperlinks
@@ -617,7 +623,7 @@ Private Sub cleanFormatting
 	
 	convertFormattingFromText
 	
-	resetFootnotesStyle
+	
 	
 
 
