@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markZXZ
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markval1
 
 End Sub
 
@@ -201,17 +201,19 @@ Private Sub printNumberingSymbols(needExtendedInfo)
 			  If Len(excerpt) &lt; exLength Then
 			  	exLength = Len(excerpt)
 			  EndIf
-			  tmp = &quot;Уровень &quot; &amp; (j + 1) &amp; &quot; шрифт &quot; &amp; fontName &amp; &quot; символ &quot; &amp; fontChar &amp; &quot; (&quot; &amp; Hex(Asc(fontChar)) &amp; &quot;) &quot;&amp; Left(excerpt,exLength) &amp; chr(10) 
-			  If Asc(fontChar) &gt; 57344  AND Asc(fontChar) &lt; 63743 Then
-			  	resultBad = resultBad &amp; tmp
-			  ElseIf fontName &lt;&gt; &quot;IPH Astra Serif&quot; _
-			     AND fontName &lt;&gt; &quot;OpenSymbol&quot; _
-			     AND fontName &lt;&gt; &quot;IPH Lib Serif&quot; _
-			     AND fontName &lt;&gt; &quot;IPH Lib Sans&quot; _
-			     AND fontName &lt;&gt; &quot;Liberation Serif&quot; _
-			     AND fontName &lt;&gt; &quot;Liberation Sans&quot; _
-			     AND needExtendedInfo Then
-			  	result = result &amp; tmp
+			  If fontChar &lt;&gt; &quot;&quot; Then
+				  tmp = &quot;Уровень &quot; &amp; (j + 1) &amp; &quot; шрифт &quot; &amp; fontName &amp; &quot; символ &quot; &amp; fontChar &amp; &quot; (&quot; &amp; Hex(Asc(fontChar)) &amp; &quot;) &quot;&amp; Left(excerpt,exLength) &amp; chr(10) 
+				  If Asc(fontChar) &gt; 57344  AND Asc(fontChar) &lt; 63743 Then
+				  	resultBad = resultBad &amp; tmp
+				  ElseIf fontName &lt;&gt; &quot;IPH Astra Serif&quot; _
+				     AND fontName &lt;&gt; &quot;OpenSymbol&quot; _
+				     AND fontName &lt;&gt; &quot;IPH Lib Serif&quot; _
+				     AND fontName &lt;&gt; &quot;IPH Lib Sans&quot; _
+				     AND fontName &lt;&gt; &quot;Liberation Serif&quot; _
+				     AND fontName &lt;&gt; &quot;Liberation Sans&quot; _
+				     AND needExtendedInfo Then
+				  	result = result &amp; tmp
+				  EndIf
 			  EndIf
 		    EndIf
 		  EndIf
