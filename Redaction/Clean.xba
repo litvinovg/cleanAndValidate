@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark34
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark35
 
 End Sub
 
@@ -472,6 +472,8 @@ Private Sub removeHLInText(textElement)
 	Dim enum1 As Object
 	Dim i As Integer
 	Dim cell As Object
+	Dim cellNames()
+	Dim cellText As Object
 	enum1 = textElement.createEnumeration()
 	While enum1.hasMoreElements
 		enum1Element = enum1.nextElement
@@ -638,9 +640,9 @@ End Sub
 Private Sub fixTableWidth()
 	Dim table As Object
 	Dim tables As Object
-	tables = ThisComponent.TextTables
 	Dim count As Long
 	Dim i As Long
+	tables = ThisComponent.TextTables
 	count = ThisComponent.TextTables.getCount()
 	For i = 0 To count - 1
 		table = tables.getByIndex(i)
@@ -663,7 +665,7 @@ Private Sub fixDrawingAnchors()
 	For i = 0 To count - 1
 		drawing = drawings.getByIndex(i)
 		If drawing.AnchorType= com.sun.star.text.TextContentAnchorType.AT_PAGE Then
-			drawing.AnchorType = com.sun.star.text.TextContentAnchorType.AT_PARAGRAPH
+		  drawing.AnchorType = com.sun.star.text.TextContentAnchorType.AT_PARAGRAPH
 		EndIf
 	Next
 End Sub
@@ -674,11 +676,11 @@ Private Sub replaceBaseWithStandard
 End Sub
 
 Private Sub replaceParaStyle(oldStyleName,newStyleName)
-	dim document   as Object
-	dim dispatcher as object
+	Dim document   as Object
+	Dim dispatcher as object
 	document   = ThisComponent.CurrentController.Frame
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
-	dim args1(21) as new com.sun.star.beans.PropertyValue
+	Dim args1(21) as new com.sun.star.beans.PropertyValue
 	args1(0).Name = &quot;SearchItem.StyleFamily&quot;
 	args1(0).Value = 2
 	args1(1).Name = &quot;SearchItem.CellType&quot;
@@ -727,27 +729,33 @@ Private Sub replaceParaStyle(oldStyleName,newStyleName)
 End Sub
 
 Private Sub doNotTrack
+	Dim dispatcher As Object
+	Dim document As Object
+	Dim trackProperties(0) as new com.sun.star.beans.PropertyValue
+	Dim args1(0) as new com.sun.star.beans.PropertyValue
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 	document   = ThisComponent.CurrentController.Frame
-	dim trackProperties(0) as new com.sun.star.beans.PropertyValue
 	trackProperties(0).Name = &quot;TrackChanges&quot;
 	trackProperties(0).Value = false
 	dispatcher.executeDispatch(document, &quot;.uno:TrackChanges&quot;, &quot;&quot;, 0, trackProperties())
-	dim args1(0) as new com.sun.star.beans.PropertyValue
 	args1(0).Name = &quot;ShowTrackedChanges&quot;
 	args1(0).Value = true
 	dispatcher.executeDispatch(document, &quot;.uno:ShowTrackedChanges&quot;, &quot;&quot;, 0, args1())
 End Sub
 
 Private Sub removeDirectFormatting
-	Dim oDescriptor &apos;The search descriptor
-	dim dispatcher as Object
+	Dim oDescriptor As Object
+	Dim dispatcher as Object
+	Dim document   as Object
+	Dim x As Integer
+	Dim endNotes As Object
+	Dim aNote As Object
+	Dim endNoteText As Object
+	Dim oViewCursor As Object
+	Dim oTextCursor As Object
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
-	dim document   as Object
 	document   = ThisComponent.CurrentController.Frame
-	Dim oViewCursor As Object &apos;View cursor
 	oViewCursor = ThisComponent.CurrentController.getViewCursor()
-
 	oViewCursor.jumpToFirstPage()
 	oViewCursor.gotoStart(false)
 	oViewCursor.gotoEnd(true)
@@ -770,17 +778,21 @@ Private Sub removeDirectFormatting
 	  oViewCursor.gotoEnd(true)
 	  dispatcher.executeDispatch(document, &quot;.uno:ResetAttributes&quot;, &quot;&quot;, 0, Array())
 	next
-	
 	oViewCursor.gotoStart(false)
 End Sub
 
 Private Sub resetFootnotesStyle
-	Dim oDescriptor &apos;The search descriptor
-	dim dispatcher as Object
+	Dim oDescriptor As Object
+	Dim dispatcher as Object
+	Dim document As Object
+	Dim oViewCursor As Object
+	Dim allNotes As Object
+	Dim x As Integer
+	Dim aNote As Object
+	Dim oEnum As Object
+	Dim oCurPar As Object
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
-	dim document   as Object
 	document   = ThisComponent.CurrentController.Frame
-	Dim oViewCursor As Object &apos;View cursor
 	oViewCursor = ThisComponent.CurrentController.getViewCursor()
 	allNotes= thisComponent.FootNotes
 	for x = 0 to allNotes.Count -1
@@ -795,8 +807,10 @@ Private Sub resetFootnotesStyle
 End Sub
 
 Private Sub removeUnusedStyles
-	&apos;calls: RemoveUnusedStyles
-	Dim sElements() as string, oFamilies, oFamily, sFamily$, sLabel, oDlg, i%
+	Dim sElements() as String
+	Dim oFamilies As Object
+	Dim oFamily As Object
+	Dim i As Integer
 	Dim oDoc as object
 	oDoc = ThisComponent
 	oFamilies = thiscomponent.StyleFamilies
@@ -807,25 +821,31 @@ Private Sub removeUnusedStyles
 	Next
 End Sub
 
-Private Sub removeUnusedStyle(oFamily,sFamily as string, bAsk as Boolean)
-	&apos;calls: getStyleNames
-	Dim sUsed() as String, sMsg$,iAnswer%, bStop as boolean
+Private Sub removeUnusedStyle(oFamily ,sFamily as string, bAsk as Boolean)
+	Dim i As Integer
+	Dim sUsed() as String
 	sUsed() = getStyleNames(oFamily,bLocalized:=True,bUsed:=False,bUserDef:=true)
 	If uBound(sUsed()) &gt; -1 then
-	         For i = 0 to uBound(sUsed())
-	            oFamily.removeByName(sUsed(i))
-	         Next
+	  For i = 0 to uBound(sUsed())
+	   oFamily.removeByName(sUsed(i))
+	  Next
 	EndIf
 End Sub
 
-Private Sub convertFormatToEnclosure(identifier, styleNames, styleValues)
-	leftEnclosure = compileLeftEnclosure(identifier)
-	rightEnclosure = compileRightEnclosure(identifier)
+Private Sub convertFormatToEnclosure(identifier As String, styleNames, styleValues)
+	Dim leftEnclosure As String
+	Dim rightEnclosure As String
 	Dim oTextCursor As Object
 	Dim startTextRange As Object
 	Dim endTextRange As Object
 	Dim foundString As String
+	Dim SDesc As Object
 	Dim SrchAttributes(Ubound(styleNames)) as new com.sun.star.beans.PropertyValue
+	Dim i As Integer
+	Dim found As Object
+	
+	leftEnclosure = compileLeftEnclosure(identifier)
+	rightEnclosure = compileRightEnclosure(identifier)
 	For i = 0 To Ubound(styleNames)
 		SrchAttributes(i).Name = styleNames(i)
 		SrchAttributes(i).Value = styleValues(i)
@@ -856,12 +876,14 @@ Private Sub convertFormatToEnclosure(identifier, styleNames, styleValues)
 	  Loop
 End Sub
 
-Private Sub convertEnclosuresToFormat(identifier, styleNames, styleValues)
+Private Sub convertEnclosuresToFormat(identifier As String, styleNames, styleValues)
 	Dim oTextCursor As Object
 	Dim startTextRange As Object
 	Dim endTextRange As Object
 	Dim leftEnclosure As String
 	Dim rightEnclosure As String
+	Dim SDesc As Object
+	Dim found As Object
 	leftEnclosure = compileLeftEnclosure(identifier)
 	rightEnclosure = compileRightEnclosure(identifier)
 	SDesc = Thiscomponent.createSearchDescriptor()
@@ -887,44 +909,54 @@ Private Sub convertEnclosuresToFormat(identifier, styleNames, styleValues)
 End Sub
 
 
-Private Function compileSearchString(identifier)
-	compileSearchString = &quot;&lt;&quot;+identifier+&quot;&gt;&quot;+&quot;(.*?)&quot;+&quot;&lt;/&quot;+identifier+&quot;&gt;&quot;
+Private Function compileSearchString(identifier) As String
+	compileSearchString = &quot;&lt;&quot; &amp; identifier &amp; &quot;&gt;&quot; &amp; &quot;(.*?)&quot; &amp; &quot;&lt;/&quot; &amp; identifier &amp; &quot;&gt;&quot;
 End Function
 
-Private Function compileLeftEnclosure(identifier)
-	compileLeftEnclosure = &quot;&lt;&quot;+identifier+&quot;&gt;&quot;
+Private Function compileLeftEnclosure(identifier) As String
+	compileLeftEnclosure = &quot;&lt;&quot; &amp; identifier &amp; &quot;&gt;&quot;
 End Function
 
-Private Function compileRightEnclosure(identifier)
-	compileRightEnclosure = &quot;&lt;/&quot;+identifier+&quot;&gt;&quot;
+Private Function compileRightEnclosure(identifier) As String
+	compileRightEnclosure = &quot;&lt;/&quot; &amp; identifier &amp; &quot;&gt;&quot;
 End Function
 
 
 Private Sub toTextBold
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharWeight&quot;)
 	styleValues = Array(com.sun.star.awt.FontWeight.BOLD)
 	convertFormatToEnclosure(CHR(867), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextBold
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharWeight&quot;)
 	styleValues = Array(com.sun.star.awt.FontWeight.BOLD)
 	convertEnclosuresToFormat(CHR(867), styleNames, styleValues)
 End Sub
 
 Private Sub toTextItalic
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharPosture&quot;)
 	styleValues = Array(com.sun.star.awt.FontSlant.ITALIC)
 	convertFormatToEnclosure(CHR(868), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextItalic
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharPosture&quot;)
 	styleValues = Array(com.sun.star.awt.FontSlant.ITALIC)
 	convertEnclosuresToFormat(CHR(868), styleNames, styleValues)
 End Sub
 
 Private Sub toTextStrikeout
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharStrikeout&quot;)
 	styleValues = Array(com.sun.star.awt.FontStrikeout.SINGLE)
 	convertFormatToEnclosure(CHR(869), styleNames, styleValues)
@@ -932,6 +964,8 @@ Private Sub toTextStrikeout
 End Sub
 
 Private Sub fromTextStrikeout
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharStrikeout&quot;)
 	styleValues = Array(com.sun.star.awt.FontStrikeout.SINGLE)
 	convertEnclosuresToFormat(CHR(869), styleNames, styleValues)
@@ -939,66 +973,89 @@ End Sub
 
 
 Private Sub toTextUnderline
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharUnderline&quot;)
 	styleValues = Array(com.sun.star.awt.FontUnderline.SINGLE)
 	convertFormatToEnclosure(CHR(870), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextUnderline
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharUnderline&quot;)
 	styleValues = Array(com.sun.star.awt.FontUnderline.SINGLE)
 	convertEnclosuresToFormat(CHR(870), styleNames, styleValues)
 End Sub
 
 Private Sub toTextSuperscript
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,14000)
 	convertFormatToEnclosure(CHR(871), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextSuperscript
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,14000)
 	convertEnclosuresToFormat(CHR(871), styleNames, styleValues)
 End Sub
 
 Private Sub toTextSubscript
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,-14000)
 	convertFormatToEnclosure(CHR(872), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextSubscript
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,-14000)
 	convertEnclosuresToFormat(CHR(872), styleNames, styleValues)
 End Sub
 
 Private Sub toTextSuperscriptOld
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,101)
 	convertFormatToEnclosure(CHR(871), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextSuperscriptOld
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,101)
 	convertEnclosuresToFormat(CHR(871), styleNames, styleValues)
 End Sub
 
 Private Sub toTextSubscriptOld
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,-101)
 	convertFormatToEnclosure(CHR(872), styleNames, styleValues)
 End Sub
 
 Private Sub fromTextSubscriptOld
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
 	styleValues = Array(58,-101)
 	convertEnclosuresToFormat(CHR(872), styleNames, styleValues)
 End Sub
 
 Private Sub toTextSparce
+	Dim i As Integer
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharKerning&quot;)
 	For i=70 To 70 
 		styleValues = Array(i)
@@ -1007,6 +1064,9 @@ Private Sub toTextSparce
 End Sub
 
 Private Sub fromTextSparce
+	Dim i As Integer
+	Dim styleNames As Variant
+	Dim StyleValues As Variant
 	styleNames = Array(&quot;CharKerning&quot;)
 	For i=70 To 70 
 		styleValues = Array(i)
@@ -1022,19 +1082,18 @@ Private Sub convertFormattingToText
 	version = Trim(getVersion())
 	bigNum = Left(version, 1)
 	smallNum = Right(version, 1)
-	toTextBold
-	toTextItalic
-	toTextStrikeout
-	toTextUnderline
+	toTextBold()
+	toTextItalic()
+	toTextStrikeout()
+	toTextUnderline()
 	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
-		toTextSuperscriptOld
-		toTextSubscriptOld
+	  toTextSuperscriptOld()
+	  toTextSubscriptOld()
 	Else
-		toTextSuperscript
-		toTextSubscript
+	  toTextSuperscript()
+	  toTextSubscript()
 	EndIf
-
-	toTextSparce
+	toTextSparce()
 End Sub
 
 Private Sub convertFormattingFromText
@@ -1045,31 +1104,30 @@ Private Sub convertFormattingFromText
 	version = Trim(getVersion())
 	bigNum = Left(version, 1)
 	smallNum = Right(version, 1)
-	fromTextSparce
+	fromTextSparce()
 	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
-		fromTextSuperscriptOld
-		fromTextSubscriptOld
+		fromTextSuperscriptOld()
+		fromTextSubscriptOld()
 	Else
-		fromTextSuperscript
-		fromTextSubscript
+		fromTextSuperscript()
+		fromTextSubscript()
 	EndIf
-	fromTextUnderline
-	fromTextStrikeout
-	fromTextItalic
-	fromTextBold
+	fromTextUnderline()
+	fromTextStrikeout()
+	fromTextItalic()
+	fromTextBold()
 End Sub
 
-Private Function confirm(description)
+Private Function confirm(description) As Boolean
 	If MsgBox (description, 4) =6 Then
 		confirm = true
 	Else
 		confirm = false
 	EndIf
-	
 End Function
 
-Private Sub ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAttributes, searchStyles)
-	Dim oReplace
+Private Sub ReplaceFormatting(SearchString As String ,oReplaceString As String ,SrchAttributes,ReplAttributes, searchStyles)
+	Dim oReplace As Object
 	oReplace = ThisComponent.createReplaceDescriptor()
 	oReplace.SearchString = SearchString
 	oReplace.ReplaceString = oReplaceString
@@ -1087,9 +1145,13 @@ Private Sub ReplaceFormatting(SearchString,oReplaceString,SrchAttributes,ReplAtt
 	ThisComponent.replaceAll(oReplace)
 End Sub
 
-Private Function getStyleNames(oFamily,bLocalized as Boolean, _
-	   optional bUsed, optional bUserDef)
-	Dim oStyle,i%,sNames$(),sName$,chkUse as Boolean, chkUDef as Boolean
+Private Function getStyleNames(oFamily,bLocalized as Boolean, optional bUsed, optional bUserDef)
+	Dim oStyle As Object
+	Dim i As Long
+	Dim sNames() As Variant
+	Dim sName As String
+	Dim chkUse as Boolean
+	Dim chkUDef as Boolean
 	For i = 0 to oFamily.getCount -1
 	   oStyle = oFamily.getByIndex(i)
 	   If bLocalized then
@@ -1117,9 +1179,9 @@ Private Function getStyleNames(oFamily,bLocalized as Boolean, _
 	getStyleNames = sNames()
 	End Function
 	
-	&apos;very simple routine appending some element to an array which can be undimensioned (LBound &gt; UBound)
-	Sub bas_PushArray(xArray(),vNextElement)
-	Dim iUB%,iLB%
+Sub bas_PushArray(xArray(),vNextElement)
+	Dim iUB As Long
+	Dim iLB As Long
 	iLB = lBound(xArray())
 	iUB = uBound(xArray())
 	If iLB &gt; iUB then
@@ -1135,16 +1197,13 @@ End Sub
 Private Sub replaceWhiteBackgroundWithTransparent
  	Dim description As String
  	Dim searchPattern As String
- 	searchPattern = &quot;&quot;
- &apos;	description = &quot;Вы уверены, что хотите заменить белый фон на прозрачный в текущем документе?&quot;
- &apos;	If NOT confirm(description) Then
- &apos;		Exit Sub
- &apos;	EndIf
-	Dim statusIndicator as Object
-	statusIndicator = ThisComponent.getCurrentController.statusIndicator
-	statusIndicator.Start(&quot;Замена белого фона на прозрачный начата&quot;,100)
 	Dim SrchAttributes(1) as new com.sun.star.beans.PropertyValue
 	Dim ReplAttributes(1) as new com.sun.star.beans.PropertyValue
+	Dim statusIndicator As Object
+ 	searchPattern = &quot;&quot;
+	statusIndicator = ThisComponent.getCurrentController.statusIndicator
+	statusIndicator.Start(&quot;Замена белого фона на прозрачный начата&quot;,100)
+
 	SrchAttributes(0).Name = &quot;CharBackTransparent&quot;
 	SrchAttributes(0).Value = False
 	SrchAttributes(1).Name = &quot;CharBackColor&quot;
@@ -1159,6 +1218,8 @@ End Sub
 
 Private Sub convertWLLatin2IPHAstra
 	Dim newFontName As String
+	Dim oSearchString As String
+	Dim oReplaceString As String
 	&apos;newFontName = &quot;IPH Astra Serif&quot;
 	Dim SrchAttributes(0) as new com.sun.star.beans.PropertyValue
 	Dim ReplAttributes(0) as new com.sun.star.beans.PropertyValue
@@ -1207,7 +1268,7 @@ Private Sub convertWLLatin2IPHAstra
 	replaceFontsInStyles( &quot;WL LatinAllIn1Goth&quot;, newFontName)
 End Sub
 
-Function getVersion
+Function getVersion As String
 	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)
 	Dim oProduct As Object
 	oProduct=GetRegistryKeyContent(&quot;org.openoffice.Setup/Product&quot;)
