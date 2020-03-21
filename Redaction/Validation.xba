@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markval1
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Validation" script:language="StarBasic">Sub markval2
 
 End Sub
 
@@ -67,7 +67,7 @@ Sub validateButton
 			removeBadCharacters
 		EndIf
 	Else
-                MsgBox &quot;Документ успешно прошел проверку. &quot; &amp; chr(10) &amp; &quot;Все изображения и символы корректны.&quot;
+      MsgBox &quot;Документ успешно прошел проверку. &quot; &amp; chr(10) &amp; &quot;Все изображения и символы корректны.&quot;
 	EndIf
 End Sub
 
@@ -84,8 +84,7 @@ Private Function checkGraphics() As String
 	Dim drawingN As Long
 	drawingN = 0
 	drawPages = ThisComponent.DrawPage
-&apos;	Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
-&apos;	MRI ThisComponent
+	Dim i As Integer
 	count = drawPages.getCount()
 	For i = 0 to count-1
 		draw = drawPages.getByIndex(i)
@@ -94,10 +93,7 @@ Private Function checkGraphics() As String
 			drawingN = drawingN + 1 
 		EndIf	
 		If InStr(shapeType,&quot;FrameShape&quot;) = 1 Then
-&apos;		  		Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
-&apos;			MRI draw
 			If draw.supportsService(&quot;com.sun.star.text.TextEmbeddedObject&quot;) Then
-
 				embeededObject = draw.getEmbeddedObject()
 				If IsNull(embeededObject) Then
 					badFrame = badFrame + 1 
@@ -137,9 +133,10 @@ Private Function checkAllFootnotes() As String
 	result = &quot;&quot;
 	footnotes = ThisComponent.Footnotes
 	count = footnotes.getCount
+	Dim i As Integer
+	Dim j As Integer
 	For i = 0 to count-1
 		footnote = footnotes.getByIndex(i)
-&apos;		Mri footnote
 		label = footnote.Label
 		charNum = Len(label)
 		For j = 1 to charNum
@@ -165,8 +162,10 @@ Private Sub printNumberingSymbols(needExtendedInfo)
 	Dim fontName As String
 	Dim result As String  
 	Dim resultBad As String
-    dim excerpt As String
-    dim exLength As Integer
+    Dim excerpt As String
+    Dim exLength As Integer
+   	Dim report As String
+    Dim k As Integer
 	families = ThisComponent.StyleFamilies
 	numStyles = families.getByName(&quot;NumberingStyles&quot;)
 	result = &quot;&quot;
@@ -213,7 +212,7 @@ Private Sub printNumberingSymbols(needExtendedInfo)
 		  EndIf
 		EndIf
 	Loop
-	dim report as String
+
 	report = &quot;&quot;
 	If result = &quot;&quot; AND resultBad = &quot;&quot; Then
 		Exit sub
@@ -242,6 +241,8 @@ Private Sub showTrackedChanges
 end Sub
 
 Private Sub StartTracking
+	Dim dispatcher As Object
+	Dim document As Object
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 	document   = ThisComponent.CurrentController.Frame
 	dim trackProperties(0) as new com.sun.star.beans.PropertyValue
@@ -255,13 +256,15 @@ Private Sub StartTracking
 End Sub
 
 Private Sub StopTracking
+	Dim dispatcher As Object
+	Dim document As Object
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 	document   = ThisComponent.CurrentController.Frame
-	dim trackProperties(0) as new com.sun.star.beans.PropertyValue
+	Dim trackProperties(0) as new com.sun.star.beans.PropertyValue
 	trackProperties(0).Name = &quot;TrackChanges&quot;
 	trackProperties(0).Value = false
 	dispatcher.executeDispatch(document, &quot;.uno:TrackChanges&quot;, &quot;&quot;, 0, trackProperties())
-	dim args1(0) as new com.sun.star.beans.PropertyValue
+	Dim args1(0) as new com.sun.star.beans.PropertyValue
 	args1(0).Name = &quot;ShowTrackedChanges&quot;
 	args1(0).Value = true
 	dispatcher.executeDispatch(document, &quot;.uno:ShowTrackedChanges&quot;, &quot;&quot;, 0, args1())

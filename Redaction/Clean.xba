@@ -102,7 +102,7 @@ End Sub
 
 Private Sub quietCleaning
 	Dim description As String
-	Dim statusIndicator as Object
+	Dim statusIndicator As Object
 	statusIndicator = ThisComponent.getCurrentController.statusIndicator
 	description = &quot;Вы уверены, что хотите выполнить чистку документа?&quot;
 	If NOT confirm(description) Then
@@ -305,13 +305,13 @@ Private Sub removeUserPageStyles
     count = oStyles.count - 1
     
     For i = 0  to count
-    	oStyle = oStyles.getByIndex(i)
-    	If oStyle.isUserDefined Then
-			oStyles.removeByName(oStyle.getName)
-			count = oStyles.count - 1
-			&apos;restart if style removed as sorting is unreliable
-			i = -1
-    	EndIf
+      oStyle = oStyles.getByIndex(i)
+      If oStyle.isUserDefined Then
+	    oStyles.removeByName(oStyle.getName)
+		count = oStyles.count - 1
+		&apos;restart if style removed as sorting is unreliable
+		i = -1
+      EndIf
     Next i
 End Sub
 
@@ -432,22 +432,21 @@ Private Function DocHasCharStyle(oDoc, sName$) As Boolean
 End Function
 
 Private Function getTemplatePath() as String
-        Dim path as String
-        Dim settings As Object
-        Dim configProvider As Object
-        Dim params(0) As new com.sun.star.beans.PropertyValue
-        Dim convService As Object
+    Dim path as String
+    Dim settings As Object
+    Dim configProvider As Object
+    Dim params(0) As new com.sun.star.beans.PropertyValue
+    Dim convService As Object
 
-        configProvider = createUnoService( &quot;com.sun.star.configuration.ConfigurationProvider&quot; )
-        params(0).Name = &quot;nodepath&quot;
-        params(0).Value = &quot;/org.openoffice.Office.Paths/Paths&quot;
-        settings = configProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, params() )
-
-        path = settings.Template.WritePath
-        convService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
-        path = convService.substituteVariables(path, true)
-        path = ConvertToUrl(path)
-        getTemplatePath = path
+    configProvider = createUnoService( &quot;com.sun.star.configuration.ConfigurationProvider&quot; )
+    params(0).Name = &quot;nodepath&quot;
+    params(0).Value = &quot;/org.openoffice.Office.Paths/Paths&quot;
+    settings = configProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, params() )
+    path = settings.Template.WritePath
+    convService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+    path = convService.substituteVariables(path, true)
+    path = ConvertToUrl(path)
+    getTemplatePath = path
 
 End Function
 

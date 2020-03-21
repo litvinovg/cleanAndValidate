@@ -14,9 +14,9 @@ Function initRedactionConfiguration()
 
    	redactionProps = reg.openPropertySet(redactionExtensionName, TRUE)
    	redactionProps.addProperty(&quot;complexity&quot;, 128, &quot;user&quot;)
-	initConfigureation = redactionProps
+	initRedactionConfiguration = redactionProps
 	exceptionHandler:
-	Resume Next
+    Resume Next
 	initRedactionConfiguration = redactionProps
 End Function
 
