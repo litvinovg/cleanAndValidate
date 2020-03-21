@@ -6,6 +6,7 @@ Function initRedactionConfiguration()
 	On Error Goto exceptionHandler
 	Dim regFactory As Object
 	Dim reg As Object
+	Dim redactionProps As Object
     Dim props(2) As New com.sun.star.beans.PropertyValue
 
     regFactory = CreateUnoService(&quot;com.sun.star.ucb.Store&quot;)
@@ -19,7 +20,7 @@ Function initRedactionConfiguration()
 	initRedactionConfiguration = redactionProps
 End Function
 
-Private Sub setConfigFromDialog(dialog)
+Private Sub setConfigFromDialog(dialog As Object)
 	Dim config As Object
 	config = initRedactionConfiguration()
 	If dialog.getControl(&quot;CB_complexity&quot;).state = 1 Then
@@ -29,7 +30,7 @@ Private Sub setConfigFromDialog(dialog)
 	EndIf
 End Sub
 
-Private Sub loadConfigToDialog(dialog)
+Private Sub loadConfigToDialog(dialog As Object)
 	Dim config As Object
 	config = initRedactionConfiguration()
 	If config.getPropertyValue(&quot;complexity&quot;) = &quot;makerUp&quot; Then
@@ -51,11 +52,8 @@ Private Sub configurationDialog
         setConfigFromDialog(dialog)
     Case 0
     End Select
-
     dialog.setVisible(false)
     dialog.dispose()
     Exit sub
-
-	
 End Sub
 </script:module>

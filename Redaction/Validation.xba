@@ -4,7 +4,7 @@
 
 End Sub
 
-Private Function isInDoc(searchString As String)
+Private Function isInDoc(searchString As String) As Boolean
 	Dim founds As Object
 	Dim sDesc As Object
 	Dim srch(0) as new com.sun.star.beans.PropertyValue
@@ -71,12 +71,7 @@ Sub validateButton
 	EndIf
 End Sub
 
-
-Sub testcheckGraphics
-	checkGraphics
-End Sub
-
-Private Function checkGraphics
+Private Function checkGraphics() As String
 	Dim drawPages As Object
 	Dim count as Integer
 	Dim draw As Object
@@ -127,13 +122,12 @@ End Function
 
 Private Sub removeBadCharacters
 	StartTracking
-	    AskAndReplace(&quot;[\uE000-\uF8FF]+&quot;,&quot;&quot;)
-	    
+    AskAndReplace(&quot;[\uE000-\uF8FF]+&quot;,&quot;&quot;)
 	StopTracking
 	showTrackedChanges
 End Sub
 
-Private Function checkAllFootnotes()
+Private Function checkAllFootnotes() As String
 	Dim footnotes As Object
 	Dim count as Integer
 	Dim charNum as Long
