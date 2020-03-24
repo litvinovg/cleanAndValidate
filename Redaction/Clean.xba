@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark35
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark36
 
 End Sub
 
@@ -672,6 +672,7 @@ End Sub
 Private Sub replaceBaseWithStandard
 	replaceParaStyle(&quot;Базовый&quot;,&quot;Основной текст&quot;)
 	replaceParaStyle(&quot;Default Style&quot;,&quot;Text Body&quot;)
+	resetSearchSettings()
 End Sub
 
 Private Sub replaceParaStyle(oldStyleName,newStyleName)
@@ -727,6 +728,58 @@ Private Sub replaceParaStyle(oldStyleName,newStyleName)
 	dispatcher.executeDispatch(document, &quot;.uno:ExecuteSearch&quot;, &quot;&quot;, 0, args1())
 End Sub
 
+Private Sub resetSearchSettings()
+	Dim document   as Object
+	Dim dispatcher as object
+	document   = ThisComponent.CurrentController.Frame
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+	dim args3(21) as new com.sun.star.beans.PropertyValue
+	args3(0).Name = &quot;SearchItem.StyleFamily&quot;
+	args3(0).Value = 2
+	args3(1).Name = &quot;SearchItem.CellType&quot;
+	args3(1).Value = 0
+	args3(2).Name = &quot;SearchItem.RowDirection&quot;
+	args3(2).Value = true
+	args3(3).Name = &quot;SearchItem.AllTables&quot;
+	args3(3).Value = false
+	args3(4).Name = &quot;SearchItem.SearchFiltered&quot;
+	args3(4).Value = false
+	args3(5).Name = &quot;SearchItem.Backward&quot;
+	args3(5).Value = false
+	args3(6).Name = &quot;SearchItem.Pattern&quot;
+	args3(6).Value = false
+	args3(7).Name = &quot;SearchItem.Content&quot;
+	args3(7).Value = false
+	args3(8).Name = &quot;SearchItem.AsianOptions&quot;
+	args3(8).Value = false
+	args3(9).Name = &quot;SearchItem.AlgorithmType&quot;
+	args3(9).Value = 0
+	args3(10).Name = &quot;SearchItem.SearchFlags&quot;
+	args3(10).Value = 65536
+	args3(11).Name = &quot;SearchItem.SearchString&quot;
+	args3(11).Value = &quot;&quot;
+	args3(12).Name = &quot;SearchItem.ReplaceString&quot;
+	args3(12).Value = &quot;&quot;
+	args3(13).Name = &quot;SearchItem.Locale&quot;
+	args3(13).Value = 255
+	args3(14).Name = &quot;SearchItem.ChangedChars&quot;
+	args3(14).Value = 2
+	args3(15).Name = &quot;SearchItem.DeletedChars&quot;
+	args3(15).Value = 2
+	args3(16).Name = &quot;SearchItem.InsertedChars&quot;
+	args3(16).Value = 2
+	args3(17).Name = &quot;SearchItem.TransliterateFlags&quot;
+	args3(17).Value = 1280
+	args3(18).Name = &quot;SearchItem.Command&quot;
+	args3(18).Value = 3
+	args3(19).Name = &quot;SearchItem.SearchFormatted&quot;
+	args3(19).Value = false
+	args3(20).Name = &quot;SearchItem.AlgorithmType2&quot;
+	args3(20).Value = 1
+	args3(21).Name = &quot;Quiet&quot;
+	args3(21).Value = true
+	dispatcher.executeDispatch(document, &quot;.uno:ExecuteSearch&quot;, &quot;&quot;, 0, args3())
+End Sub
 Private Sub doNotTrack
 	Dim dispatcher As Object
 	Dim document As Object
@@ -752,6 +805,7 @@ Private Sub removeDirectFormatting
 	Dim endNoteText As Object
 	Dim oViewCursor As Object
 	Dim oTextCursor As Object
+	Dim footNotes As Object
 	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 	document   = ThisComponent.CurrentController.Frame
 	oViewCursor = ThisComponent.CurrentController.getViewCursor()
