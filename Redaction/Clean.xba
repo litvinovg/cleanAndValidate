@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark37
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark38
 
 End Sub
 
@@ -46,10 +46,6 @@ Private Sub cleanAccordingTo(dialog As Object)
 	If dialog.getControl(&quot;cleanFormatting&quot;).state = 1 Then
 		statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 		cleanFormatting
-	EndIf
-	If dialog.getControl(&quot;resetFootnotesStyle&quot;).state = 1 Then
-		statusIndicator.Start(&quot;Очищаем стили сносок&quot;,100)	
-		resetFootnotesStyle
 	EndIf
 	If dialog.getControl(&quot;replaceWhiteBackground&quot;).state = 1 Then
 		statusIndicator.Start(&quot;Заменяем белый фон на прозрачный&quot;,100)	
@@ -117,7 +113,6 @@ Private Sub quietCleaning
     unicodeSymbolsConversion
    	statusIndicator.Start(&quot;Чистим ручное форматирование&quot;,100)	
 	cleanFormatting
-	resetFootnotesStyle
 	removeUnusedStyles
    	statusIndicator.Start(&quot;Удаляем гиперссылки&quot;,100)	
 	removeHyperlinks
@@ -629,6 +624,8 @@ Private Sub cleanFormatting
 	convertFontsToCharStyles()
 	
 	replaceBaseWithStandard()
+	
+	resetFootnotesStyle
 	
 	removeDirectFormatting()
 	
