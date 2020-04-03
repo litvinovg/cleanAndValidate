@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark36
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark37
 
 End Sub
 
@@ -624,7 +624,7 @@ Private Sub cleanFormatting
     &apos;Не должно быть пустых абзацев
     AskAndReplace(&quot;^$&quot;,&quot;&quot;)
 
-	convertFormattingToText()
+	convertFormattingToUserFields
 	
 	convertFontsToCharStyles()
 	
@@ -632,7 +632,7 @@ Private Sub cleanFormatting
 	
 	removeDirectFormatting()
 	
-	convertFormattingFromText()
+	convertUserFieldsToFormatting
 	
 End Sub
 
@@ -1128,48 +1128,7 @@ Private Sub fromTextSparce
 End Sub
 
 
-Private Sub convertFormattingToText
-	Dim version As String
-	Dim smallNum As String
-	Dim bigNum As String
-	version = Trim(getVersion())
-	bigNum = Left(version, 1)
-	smallNum = Right(version, 1)
-	toTextBold()
-	toTextItalic()
-	toTextStrikeout()
-	toTextUnderline()
-	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
-	  toTextSuperscriptOld()
-	  toTextSubscriptOld()
-	Else
-	  toTextSuperscript()
-	  toTextSubscript()
-	EndIf
-	toTextSparce()
-End Sub
 
-Private Sub convertFormattingFromText
-	Dim version As String
-	version = Trim(getVersion())
-	Dim smallNum As String
-	Dim bigNum As String
-	version = Trim(getVersion())
-	bigNum = Left(version, 1)
-	smallNum = Right(version, 1)
-	fromTextSparce()
-	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
-		fromTextSuperscriptOld()
-		fromTextSubscriptOld()
-	Else
-		fromTextSuperscript()
-		fromTextSubscript()
-	EndIf
-	fromTextUnderline()
-	fromTextStrikeout()
-	fromTextItalic()
-	fromTextBold()
-End Sub
 
 Private Function confirm(description) As Boolean
 	If MsgBox (description, 4) =6 Then
@@ -1328,4 +1287,355 @@ Function getVersion As String
 	getVersion=oProduct.getByName(&quot;ooSetupVersion&quot;)
 End Function
 
+
+
+Private Sub convertFormatToUserFields(identifier As String, styleNames, styleValues)
+	Dim leftField As String
+	Dim rightField As String
+	Dim i As Integer
+	leftField = &quot;left&quot; &amp; identifier
+	rightField = &quot;right&quot; &amp; identifier
+	Dim SrchAttributes(Ubound(styleNames)) as new com.sun.star.beans.PropertyValue
+	For i = Lbound(styleNames) To Ubound(styleNames)
+		SrchAttributes(i).Name = styleNames(i)
+	Next i
+	For i = Lbound(styleValues) To Ubound(styleValues)
+		SrchAttributes(i).Value = styleValues(i)
+	Next i
+	SDesc = Thiscomponent.createSearchDescriptor()
+	SDesc.SearchAll = true
+	SDesc.SearchRegularExpression = true
+	SDesc.SearchString = &quot;&quot;
+	SDesc.searchStyles = false
+	SDesc.SetSearchAttributes(SrchAttributes)
+	found = Thiscomponent.findFirst(SDesc)
+	i = 0
+	  Do While not isNull(found)
+		If Len(found.String) &lt;&gt; 0 Then
+			insertUserField(found.End,rightField &amp; i,&quot;&quot;)
+			insertUserField(found.start,leftField &amp; i,&quot;&quot;)
+		EndIf
+		found = Thiscomponent.findNext(found.End, SDesc)
+		i = i + 1
+	  Loop
+End Sub
+
+Private Sub convertUserFieldsToFormat(identifier As String, styleNames , styleValues)
+	Dim oTextCursor As Object
+	Dim oMasters As Object
+	Dim endTextRange As Object
+	Dim leftFieldName As String
+	Dim rightFieldName As String
+	Dim leftFieldMaster As Object
+	Dim rightFieldMaster As Object
+	Dim leftField As Object
+	Dim rightField As Object
+	Dim leftAnchor As Object
+	Dim rightAnchor As Object
+	Dim i As Integer
+	oMasters = ThisComponent.getTextFieldMasters()
+	i = 0
+	Do
+		leftFieldName = &quot;com.sun.star.text.FieldMaster.User&quot; &amp; &quot;.&quot; &amp; &quot;left&quot; &amp; identifier &amp; i
+		rightFieldName = &quot;com.sun.star.text.FieldMaster.User&quot; &amp; &quot;.&quot; &amp; &quot;right&quot; &amp; identifier &amp; i
+		If oMasters.hasByName(leftFieldName) AND oMasters.hasByName(rightFieldName) Then
+		  	leftFieldMaster = oMasters.getByName(leftFieldName)
+			leftField = leftFieldMaster.DependentTextFields(0)
+			leftAnchor = leftField.getAnchor()
+			rightFieldMaster = oMasters.getByName(rightFieldName)
+			rightField = rightFieldMaster.DependentTextFields(0)
+			rightAnchor = rightField.getAnchor()
+			oTextCursor = leftAnchor.Text.createTextCursor()
+			oTextCursor.goToRange(leftAnchor.Start, false)
+		  	oTextCursor.goToRange(rightAnchor.End, true)
+		  	oTextCursor.setPropertyValues(styleNames, styleValues)
+		  	leftField.dispose()
+		  	leftFieldMaster.dispose()
+		  	rightField.dispose()
+		  	rightFieldMaster.dispose()
+		  	i=i+1
+	  	Else
+	  		Exit sub
+	  	EndIf
+  	Loop
+End Sub
+
+
+Private Sub formatToUserFieldsBold
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharWeight&quot;)
+	styleValues = Array(com.sun.star.awt.FontWeight.BOLD)
+	convertFormatToUserFields(&quot;Bold&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatBold
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharWeight&quot;)
+	styleValues = Array(com.sun.star.awt.FontWeight.BOLD)
+	convertUserFieldsToFormat(&quot;Bold&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsItalic
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharPosture&quot;)
+	styleValues = Array(com.sun.star.awt.FontSlant.ITALIC)
+	convertFormatToUserFields(&quot;Italic&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatItalic
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharPosture&quot;)
+	styleValues = Array(com.sun.star.awt.FontSlant.ITALIC)
+	convertUserFieldsToFormat(&quot;Italic&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsStrikeout
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharStrikeout&quot;)
+	styleValues = Array(com.sun.star.awt.FontStrikeout.SINGLE)
+	convertFormatToUserFields(&quot;StrikeOut&quot;, styleNames, styleValues)
+
+End Sub
+
+Private Sub userFieldsToFormatStrikeout
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharStrikeout&quot;)
+	styleValues = Array(com.sun.star.awt.FontStrikeout.SINGLE)
+	convertUserFieldsToFormat(&quot;StrikeOut&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsUnderline
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharUnderline&quot;)
+	styleValues = Array(com.sun.star.awt.FontUnderline.SINGLE)
+	convertFormatToUserFields(&quot;UnderLine&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatUnderline
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharUnderline&quot;)
+	styleValues = Array(com.sun.star.awt.FontUnderline.SINGLE)
+	convertUserFieldsToFormat(&quot;UnderLine&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsSuperscript
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,14000)
+	convertFormatToUserFields(&quot;SuperScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatSuperscript
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,14000)
+	convertUserFieldsToFormat(&quot;SuperScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsSubscript
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,-14000)
+	convertFormatToUserFields(&quot;SubScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatSubscript
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,-14000)
+	convertUserFieldsToFormat(&quot;SubScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsSuperscriptOld
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,101)
+	convertFormatToUserFields(&quot;SuperScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatSuperscriptOld
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,101)
+	convertUserFieldsToFormat(&quot;SuperScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsSubscriptOld
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,-101)
+	convertFormatToUserFields(&quot;SubScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub userFieldsToFormatSubscriptOld
+	Dim styleValues(1) As Integer
+	Dim styleNames(1) As String
+	styleNames = Array(&quot;CharEscapementHeight&quot;,&quot;CharEscapement&quot;)
+	styleValues = Array(58,-101)
+	convertUserFieldsToFormat(&quot;SubScript&quot;, styleNames, styleValues)
+End Sub
+
+Private Sub formatToUserFieldsSparce
+	Dim i As Integer
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharKerning&quot;)
+	i = 18
+	styleValues = Array(i)
+	convertFormatToUserFields(i &amp; &quot;Kerning&quot; , styleNames, styleValues)
+	i = 35
+	styleValues = Array(i)
+	convertFormatToUserFields(i &amp; &quot;Kerning&quot; , styleNames, styleValues)
+	i = 53
+	styleValues = Array(i)
+	convertFormatToUserFields(i &amp; &quot;Kerning&quot; , styleNames, styleValues)
+	i = 70
+	styleValues = Array(i)
+	convertFormatToUserFields(i &amp; &quot;Kerning&quot; , styleNames, styleValues)
+	
+End Sub
+
+Private Sub userFieldsToFormatSparce
+	Dim i As Integer
+	Dim styleValues(0) As Integer
+	Dim styleNames(0) As String
+	styleNames = Array(&quot;CharKerning&quot;)
+	i = 18
+	styleValues = Array(i)
+	convertUserFieldsToFormat(i &amp; &quot;Kerning&quot;, styleNames, styleValues)
+	i = 35
+	styleValues = Array(i)
+	convertUserFieldsToFormat(i &amp; &quot;Kerning&quot;, styleNames, styleValues)
+	i = 53
+	styleValues = Array(i)
+	convertUserFieldsToFormat(i &amp; &quot;Kerning&quot;, styleNames, styleValues)
+	i = 70
+	styleValues = Array(i)
+	convertUserFieldsToFormat(i &amp; &quot;Kerning&quot;, styleNames, styleValues)
+	
+End Sub
+
+Private Sub convertFormattingToText
+	Dim version As String
+	Dim smallNum As String
+	Dim bigNum As String
+	version = Trim(getVersion())
+	bigNum = Left(version, 1)
+	smallNum = Right(version, 1)
+	toTextBold()
+	toTextItalic()
+	toTextStrikeout()
+	toTextUnderline()
+	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
+	  toTextSuperscriptOld()
+	  toTextSubscriptOld()
+	Else
+	  toTextSuperscript()
+	  toTextSubscript()
+	EndIf
+	toTextSparce()
+End Sub
+
+Private Sub convertFormattingToUserFields
+	Dim version As String
+	Dim smallNum As String
+	Dim bigNum As String
+	version = Trim(getVersion())
+	bigNum = Left(version, 1)
+	smallNum = Right(version, 1)
+	formatToUserFieldsBold
+	formatToUserFieldsItalic
+	formatToUserFieldsStrikeout
+	formatToUserFieldsUnderline
+
+	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
+		formatToUserFieldsSuperscriptOld
+		formatToUserFieldsSubscriptOld
+	Else
+		formatToUserFieldsSuperscript
+		formatToUserFieldsSubscript
+	EndIf
+
+	formatToUserFieldsSparce
+End Sub
+
+Private Sub convertFormattingFromText
+	Dim version As String
+	version = Trim(getVersion())
+	Dim smallNum As String
+	Dim bigNum As String
+	version = Trim(getVersion())
+	bigNum = Left(version, 1)
+	smallNum = Right(version, 1)
+	fromTextSparce()
+	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
+		fromTextSuperscriptOld()
+		fromTextSubscriptOld()
+	Else
+		fromTextSuperscript()
+		fromTextSubscript()
+	EndIf
+	fromTextUnderline()
+	fromTextStrikeout()
+	fromTextItalic()
+	fromTextBold()
+End Sub
+
+Private Sub convertUserFieldsToFormatting
+	Dim version As String
+	version = Trim(getVersion())
+	Dim smallNum As String
+	Dim bigNum As String
+	version = Trim(getVersion())
+	bigNum = Left(version, 1)
+	smallNum = Right(version, 1)
+	userFieldsToFormatSparce
+	
+	If CInt(bigNum) &lt; 6 OR (CInt(bigNum) = 6 AND CInt(smallNum &lt; 3) ) Then
+		userFieldsToFormatSuperscriptOld
+		userFieldsToFormatSubscriptOld
+	Else
+		userFieldsToFormatSuperscript
+		userFieldsToFormatSubscript
+	EndIf
+	userFieldsToFormatUnderline
+	userFieldsToFormatStrikeout
+	userFieldsToFormatItalic
+	userFieldsToFormatBold
+End Sub
+
+Private Function insertUserField(cursor As Object,fieldName As String,fieldValue As String)
+  Dim oField  As Object &apos;Field to insert
+  Dim oFieldMaster As Object
+  Dim oMasters As Object
+  oField = ThisComponent.createInstance(&quot;com.sun.star.text.textfield.User&quot;)
+  oMasters = ThisComponent.getTextFieldMasters()
+  If oMasters.hasByName(&quot;com.sun.star.text.FieldMaster.User&quot; &amp; &quot;.&quot; &amp; fieldName) Then
+  	oFieldMaster = oMasters.getByName(&quot;com.sun.star.text.FieldMaster.User&quot; &amp; &quot;.&quot; &amp; fieldName)
+	oFieldMaster.Name = fieldName
+	oFieldMaster.Content = fieldValue
+  Else 
+	oFieldMaster = ThisComponent.createInstance(&quot;com.sun.star.text.FieldMaster.User&quot;)
+	oFieldMaster.Name = fieldName
+	oFieldMaster.Content = fieldValue
+  EndIf
+  oField.attachTextFieldMaster(oFieldMaster)
+  cursor.Text.insertTextContent(cursor, oField, False)
+  oField.IsVisible = false
+End Function 
 </script:module>
