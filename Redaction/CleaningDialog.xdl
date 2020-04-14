@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
-<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="CleaningDialog" dlg:left="107" dlg:top="22" dlg:width="237" dlg:height="180" dlg:closeable="true" dlg:moveable="true">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="CleaningDialog" dlg:left="107" dlg:top="22" dlg:width="237" dlg:height="186" dlg:closeable="true" dlg:moveable="true">
  <dlg:bulletinboard>
-  <dlg:button dlg:id="Cancel" dlg:tab-index="0" dlg:left="67" dlg:top="159" dlg:width="40" dlg:height="12" dlg:value="Отмена" dlg:button-type="cancel"/>
+  <dlg:button dlg:id="Cancel" dlg:tab-index="0" dlg:left="67" dlg:top="171" dlg:width="40" dlg:height="12" dlg:value="Отмена" dlg:button-type="cancel"/>
   <dlg:button dlg:id="CommandButton1" dlg:tab-index="1" dlg:left="43" dlg:top="170" dlg:width="2" dlg:height="0" dlg:value="CommandButton1"/>
-  <dlg:button dlg:id="OK" dlg:tab-index="2" dlg:left="131" dlg:top="159" dlg:width="40" dlg:height="12" dlg:value="OK" dlg:button-type="ok"/>
+  <dlg:button dlg:id="OK" dlg:tab-index="2" dlg:left="131" dlg:top="171" dlg:width="40" dlg:height="12" dlg:value="OK" dlg:button-type="ok"/>
   <dlg:checkbox dlg:id="fontsInStyles" dlg:tab-index="3" dlg:left="11" dlg:top="11" dlg:width="218" dlg:height="7" dlg:value="Заменить названия шрифтов в стилях" dlg:checked="false"/>
   <dlg:checkbox dlg:id="removeLinks" dlg:tab-index="6" dlg:left="11" dlg:top="51" dlg:width="218" dlg:height="7" dlg:value="Удалить гиперссылки" dlg:checked="false"/>
   <dlg:checkbox dlg:id="cleanFormatting" dlg:tab-index="5" dlg:left="11" dlg:top="32" dlg:width="218" dlg:height="7" dlg:value="Очистить форматирование" dlg:checked="false"/>
@@ -19,5 +19,6 @@
   <dlg:checkbox dlg:id="removeUnusedStyles" dlg:tab-index="14" dlg:left="11" dlg:top="133" dlg:width="218" dlg:height="7" dlg:value="Удалить неиспользуемые стили" dlg:checked="false"/>
   <dlg:checkbox dlg:id="removeManualPageBreaks" dlg:tab-index="15" dlg:left="11" dlg:top="143" dlg:width="218" dlg:height="7" dlg:value="Удалить все  разрывы страниц" dlg:checked="false"/>
   <dlg:checkbox dlg:id="replaceWhiteBackground" dlg:tab-index="16" dlg:left="11" dlg:top="41" dlg:width="218" dlg:height="7" dlg:value="Заменить белый фон символов на прозрачный" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="removeBasic" dlg:tab-index="17" dlg:left="11" dlg:top="154" dlg:width="218" dlg:height="7" dlg:value="Удалить макросы" dlg:checked="false"/>
  </dlg:bulletinboard>
 </dlg:window>

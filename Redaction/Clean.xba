@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark38
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Clean" script:language="StarBasic">Sub mark39
 
 End Sub
 
@@ -89,11 +89,27 @@ Private Sub cleanAccordingTo(dialog As Object)
 	If dialog.getControl(&quot;removeManualPageBreaks&quot;).state = 1 Then
 		removeManualPageBreaks
 	EndIf
+	If dialog.getControl(&quot;removeBasic&quot;).state = 1 Then
+		removeLibs
+	EndIf
 	
 	statusIndicator.end()
 	saveAndreload()
 	MsgBox &quot;Чистка завершена.&quot;
 	
+End Sub
+
+Private Sub removeLibs
+	Dim docBasic as Object
+	docBasic = ThisComponent.BasicLibraries
+	Dim libs() As String 
+	libs = docBasic.getElementNames()
+	Dim libName As String
+	Dim i As Integer
+	For i = LBound(libs) To UBound(libs)
+	  libName = libs(i)
+	  docBasic.removeLibrary(libName)
+	Next i
 End Sub
 
 Private Sub quietCleaning
@@ -130,6 +146,7 @@ Private Sub quietCleaning
 	removeUserPageStyles
 	statusIndicator.Start(&quot;Загружаем стили из шаблона&quot;,100)	
 	loadArticleStyles
+	removeLibs
 	statusIndicator.end()
 	saveAndreload()
 	MsgBox &quot;Чистка завершена.&quot;
